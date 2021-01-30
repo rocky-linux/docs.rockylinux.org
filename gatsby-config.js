@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: "Rocky Linux Documentation",
-    url: `https://${process.env.VERCEL_URL}/`
+    siteUrl: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/` : 'http://localhost:8000'
   },
   plugins: [
     "gatsby-plugin-postcss",
