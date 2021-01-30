@@ -1,4 +1,5 @@
 import { ChevronRightOutline, MenuAlt4Outline } from "@graywolfai/react-heroicons";
+import { Link } from "gatsby";
 import * as React from "react";
 
 export default () => {
@@ -31,10 +32,10 @@ export default () => {
                             <span className="font-bold font-display">Documentation</span>
                         </div>
                         <div className="flex items-center">
-                            <a className="text-sm mr-4 font-bold" href="/">Home</a>
-                            <a className="text-sm mr-4" href="/">Manuals</a>
-                            <a className="text-sm mr-4" href="/">Guides</a>
-                            <a className="text-sm mr-4" href="/">Contributing</a>
+                            <Link className="text-sm mr-4" to="/" activeClassName="font-bold">Home</Link>
+                            <Link className="text-sm mr-4" to="/manuals" activeClassName="font-bold">Manuals</Link>
+                            <Link className="text-sm mr-4" to="/guides" activeClassName="font-bold">Guides</Link>
+                            <Link className="text-sm mr-4" to="/contributing" activeClassName="font-bold">Contributing</Link>
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,16 @@ body {
     display: flex;
     flex-direction: column;
 }
+#___gatsby {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+#___gatsby > #gatsby-focus-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
 
 main {
     flex-grow: 1;
