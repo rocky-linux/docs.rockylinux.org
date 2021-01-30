@@ -1,9 +1,9 @@
-const colors = require('tailwindcss/colors')
+const colors = require('tailwindcss/colors');
 
 module.exports = {
     darkMode: 'media',
     purge: {
-        content: ["./layouts/**/*.html", "./content/**/*.md", "./content/**/*.html"],
+        content: [ "src/**/*.js", "src/**/*.md", "src/**/*.mdx" ],
     },
     theme: {
         spacing: {
