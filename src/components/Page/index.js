@@ -35,7 +35,7 @@ export default ({ children, meta: { title, description, keywords } }) => {
                 <meta name="keywords" content={keywords ? keywords : 'rocky linux, documentation, docs, tutorials, learning, linux, sysadmin'} />
             </Helmet>
             <Navbar />
-            <main className="bg-gray-100 flex-grow">
+            <main className="dark:bg-gray-900 dark:text-gray-100 bg-gray-100 flex-grow">
                 <Container>
                     {children}
                 </Container>
