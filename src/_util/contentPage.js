@@ -34,7 +34,7 @@ export default ({ children, pageContext: { frontmatter } }) => {
                 {author ? <span id="author" className="italic">By {author.name}</span> : null}
             </div>
             <hr />
-            <div className="prose max-w-full dark-mode:prose-dark dark:text-gray-300">
+            <div className="prose max-w-full dark-mode:prose-dark dark:text-gray-300 pb-10">
                 { children }
             </div>
         </Page>
