@@ -1,41 +1,37 @@
+import { graphql, Link, useStaticQuery } from "gatsby";
+import { MDXRenderer } from "gatsby-plugin-mdx";
+import { MDXProvider } from "@mdx-js/react";
 import * as React from "react";
 import Page from "../components/Page";
 
-/**
- * Parses an author text, following the same format as NPM's `author` field.
- * @param {string} text The author text to parse
- */
-const formatAuthor = text => {
-    const out = {};
+const components = { Link };
 
-    // Check if author string includes emails
-    if (text.includes('<') && text.includes('>')) {
-        const startPos = text.lastIndexOf('<') + 1;
-
-        const len = text.lastIndexOf('>') - startPos; // Get email length
-        out.email = text.substr(startPos, len); // Get the email as a substring
-        text = text.replace(`<${out.email}>`, ''); // Remove the email from the text
-    }
-
-    out.name = text.trim();
-
-    return out;
-}
-
-export default ({ children, pageContext: { frontmatter } }) => {
-    let author = undefined;
-    if (frontmatter.author) {
-        author = formatAuthor(frontmatter.author);
-    }
+export default ({ pageContext: { frontmatter, headings, body } }) => {
     return (
         <Page meta={{ title: frontmatter.title }}>
-            <div>
-                <h1 className="mb-2">{ frontmatter.title }</h1>
-                {author ? <span id="author" className="italic">By {author.name}</span> : null}
-            </div>
-            <hr />
-            <div className="prose max-w-full dark-mode:prose-dark dark:text-gray-300 pb-10">
-                { children }
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <h4 className="text-lg mb-2 font-bold">Manuals</h4>
+                    <p>Coming soon</p>
+                </div>
+                <div className="col-span-2">
+                    <div className="mb-6">
+                        <h1 className="text-4xl dark:text-white">{ frontmatter.title }</h1>
+                    </div>
+                    <div className="bg-white dark:bg-gray-700 dark:border-gray-700 p-4 border border-gray-400 mb-6" style={{ maxWidth: '300px', width: '100%' }}>
+                        <b className="mb-2">Page Contents</b>
+                        <ul className="list-disc list-inside pl-4">
+                        {headings.items.map(({ title, url }) => (
+                            <li key={url}><a className="text-green-500 underline" href={url}>{title}</a></li>
+                        ))}
+                        </ul>
+                    </div>
+                    <div className="prose max-w-full dark-mode:prose-dark dark:text-gray-300 pb-10">
+                        <MDXProvider components={components}>
+                            <MDXRenderer>{ body }</MDXRenderer>
+                        </MDXProvider>
+                    </div>
+                </div>
             </div>
         </Page>
     );

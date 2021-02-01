@@ -47,19 +47,17 @@ module.exports = {
             __key: "contents",
         },
         {
+            resolve: "gatsby-plugin-mdx",
+            options: {
+                extensions: [`.mdx`, `.md`],
+                remarkPlugins: [ require('remark-slug') ]
+            }
+        },
+        /*{
             resolve: `gatsby-plugin-page-creator`,
             options: {
                 path: `./src/content`,
             },
-        },
-        {
-            resolve: "gatsby-plugin-mdx",
-            options: {
-                extensions: [`.mdx`, `.md`],
-                defaultLayouts: {
-                    default: require.resolve('./src/_util/contentPage')
-                }
-            }
-        },
+        },*/
     ],
 };
