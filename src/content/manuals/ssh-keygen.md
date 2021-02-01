@@ -1,6 +1,5 @@
 ---
 title: 'Overview of the ssh-keygen utility'
-author: 'Hayden Young <hi@hbjy.dev>'
 ---
 
 The ssh-keygen utility is used for generating keys. It does this by using one of three different digital signature algorithms.
