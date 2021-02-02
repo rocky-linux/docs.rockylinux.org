@@ -21,9 +21,9 @@ export default ({ pageContext: { frontmatter, headings, body } }) => {
                     <div className="bg-white dark:bg-gray-700 dark:border-gray-700 p-4 border border-gray-400 mb-6" style={{ maxWidth: '300px', width: '100%' }}>
                         <b className="mb-2">Page Contents</b>
                         <ul className="list-disc list-inside pl-4">
-                        {headings.items.map(({ title, url }) => (
-                            <li key={url}><a className="text-green-500 underline" href={url}>{title}</a></li>
-                        ))}
+                            {headings.items.map(({ title, url }) => (
+                                <li key={url}><a className="text-green-500 underline" href={url}>{title}</a></li>
+                            ))}
                         </ul>
                     </div>
                     <div className="prose max-w-full dark-mode:prose-dark dark:text-gray-300 pb-10">
