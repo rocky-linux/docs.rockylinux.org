@@ -18,7 +18,7 @@ export default ({ pageContext: { frontmatter, headings, body } }) => {
                     <div className="mb-6">
                         <h1 className="text-4xl dark:text-white">{ frontmatter.title }</h1>
                     </div>
-                    <div className="bg-white dark:bg-gray-700 dark:border-gray-700 p-4 border border-gray-400 mb-6" style={{ maxWidth: '300px', width: '100%' }}>
+                    <div className="bg-white dark:bg-gray-700 dark:border-gray-700 p-4 border border-gray-400 mb-6" style={{ minWidth: '300px', width: 'fit-content' }}>
                         <b className="mb-2">Page Contents</b>
                         <ul className="list-disc list-inside pl-4">
                             {headings.items.map(({ title, url }) => (
