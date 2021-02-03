@@ -25,7 +25,7 @@ or don't know.
 ## Install Steps (GUI/Anaconda) (Recommended)
 
 Once the prerequisites have been met, you'll need to download a Rocky Linux ISO
-from [rockylinux.org/downloads](https://rocky-linux.org/downloads).
+from [rockylinux.org/downloads](https://rockylinux.org/downloads).
 
 You should then make sure the file hashes are correct to ensure your download
 is an official Rocky Linux build and has not been compromised or modified in
@@ -59,17 +59,17 @@ machine that you will be installing Rocky Linux on and boot to this�
 Again, refer to the prerequisites (above) to do this.
 
 If you successfully boot to the Rocky Linux image, you should be looking at
-a Rocky Linux splash screen giving you installation options.  
+a Rocky Linux splash screen giving you installation options.
 
 TODO: Screenshot
 
 If you are using the entire drive of your target machine for Rocky Linux, the
 easiest way to get up and running is to simply take the default installation
-option.  
+option. 
 
 TODO: Screenshot
 
-Choose your language preference on the first screen and click "Continue"  
+Choose your language preference on the first screen and click "Continue"
 
 TODO: Screenshot
 
@@ -82,9 +82,11 @@ enable the Network interface that you are using insert.
 
 TODO: Screenshot
 
-When you've made all of the changes that you wish to make here, click "Begin Installation".
+When you've made all of the changes that you wish to make here, click
+"Begin Installation".
 
-You will be presented with a splash screen for setting the password for root and adding a user.
+You will be presented with a splash screen for setting the password for root and
+adding a user.
 
 TODO: Screenshot
 
