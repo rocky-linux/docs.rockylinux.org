@@ -17,10 +17,10 @@ import Navbar from '../Navbar';
 
 /**
  * A default page container, used to template other pages in the site.
- * 
+ *
  * @param {PageOptions} options The options to instantiate the site with.
  */
-export default ({ children, meta: { title, description, keywords } }) => {
+export default ({ children, wide, meta: { title, description, keywords } }) => {
     return (
         <>
             <Helmet>
@@ -35,8 +35,8 @@ export default ({ children, meta: { title, description, keywords } }) => {
                 <meta name="keywords" content={keywords ? keywords : 'rocky linux, documentation, docs, tutorials, learning, linux, sysadmin'} />
             </Helmet>
             <Navbar />
-            <main className="dark:bg-gray-900 dark:text-gray-300 bg-gray-100 flex-grow">
-                <Container>
+            <main className="dark:bg-gray-900 dark:text-gray-300 bg-gray-100 flex-grow mt-14">
+                <Container wide={wide}>
                     {children}
                 </Container>
             </main>

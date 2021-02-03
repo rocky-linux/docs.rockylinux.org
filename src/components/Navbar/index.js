@@ -5,7 +5,7 @@ import * as React from "react";
 export default () => {
     return (
         <>
-            <div className="h-14 bg-gray-900 px-4 flex items-center text-white sm:hidden">
+            <div className="h-14 bg-gray-900 px-4 flex items-center text-white sm:hidden fixed w-full z-50">
                 <div className="menuIcon w-6 h-6 mr-3">
                     <MenuAlt4Outline />
                 </div>
@@ -20,7 +20,7 @@ export default () => {
                     <span className="font-bold font-display">Documentation</span>
                 </Link>
             </div>
-            <div className="h-14 bg-gray-900 px-4 flex justify-center items-center text-white hidden sm:flex">
+            <div className="h-14 bg-gray-900 px-4 flex justify-center items-center text-white hidden sm:flex fixed w-full z-50">
                 <div id="inner" className="max-w-screen-lg w-full flex items-center">
                     <div className="flex items-center">
                         <Link to="/" className="flex items-center mr-8">
