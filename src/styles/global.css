@@ -6,6 +6,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base body styling */
 body {
     min-height: 100vh;
     display: flex;
@@ -21,13 +22,10 @@ body {
     display: flex;
     flex-direction: column;
 }
-
-main {
-    flex-grow: 1;
-}
+main { flex-grow: 1 }
 
 /* Heading styles */
-h1,h2,h3,h4,h5,h6 { @apply font-display }
+h1,h2,h3,h4,h5,h6 { @apply font-display text-white }
 h1 { @apply text-5xl font-bold }
 h2 { @apply text-4xl font-bold }
 h3 { @apply text-3xl font-bold mb-4 }
@@ -41,7 +39,7 @@ p { @apply font-normal text-base }
 /* Misc. element styles */
 hr { @apply w-16 border-b-4 border-green-500 /* mx-auto */ my-6 }
 
-/* Prose dark theme */
+/* Tailwind typography preset dark theme */
 pre { @apply p-4 rounded-lg }
 
 .prose code, .prose strong {
