@@ -12,7 +12,14 @@ export default ({ pageContext: { frontmatter, headings, body } }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 <div>
                     <h4 className="text-lg mb-2 font-bold">Manuals</h4>
-                    <p>Coming soon</p>
+                    <ul className="text-base">
+                        <li className="font-bold">
+                            Getting Started
+                            <ul className="font-normal list-disc list-inside">
+                                <li><Link to="/manuals/install/">Installation</Link></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
                 <div className="md:col-span-2 lg:col-span-3 xl:col-span-4">
                     <div className="mb-6">
