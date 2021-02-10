@@ -1,7 +1,7 @@
-import * as React from "react";
-import { Helmet } from "react-helmet";
-import Container from "../Container";
-import Footer from "../Footer";
+import * as React from 'react';
+import { Helmet } from 'react-helmet';
+import Container from '../Container';
+import Footer from '../Footer';
 import Navbar from '../Navbar';
 
 /**
@@ -26,19 +26,55 @@ export default ({ children, wide, meta: { title, description, keywords } }) => {
             <Helmet>
                 <title>{title} - Rocky Linux Documentation</title>
 
-                <link rel="preload" href="https://rockylinux.org/fonts/RockyDisplay/RockyDisplay-Medium.woff2" as="font" type="font/woff2" crossOrigin />
-                <link rel="preload" href="https://rockylinux.org/fonts/RockyText/RockyText-Bold.woff2" as="font" type="font/woff2" crossOrigin />
-                <link rel="preload" href="https://rockylinux.org/fonts/RockyText/RockyText-Medium.woff2" as="font" type="font/woff2" crossOrigin />
-                <link rel="preload" href="https://rockylinux.org/fonts/RockyText/RockyText-Regular.woff2" as="font" type="font/woff2" crossOrigin />
+                <link
+                    rel="preload"
+                    href="https://rockylinux.org/fonts/RockyDisplay/RockyDisplay-Medium.woff2"
+                    as="font"
+                    type="font/woff2"
+                    crossOrigin
+                />
+                <link
+                    rel="preload"
+                    href="https://rockylinux.org/fonts/RockyText/RockyText-Bold.woff2"
+                    as="font"
+                    type="font/woff2"
+                    crossOrigin
+                />
+                <link
+                    rel="preload"
+                    href="https://rockylinux.org/fonts/RockyText/RockyText-Medium.woff2"
+                    as="font"
+                    type="font/woff2"
+                    crossOrigin
+                />
+                <link
+                    rel="preload"
+                    href="https://rockylinux.org/fonts/RockyText/RockyText-Regular.woff2"
+                    as="font"
+                    type="font/woff2"
+                    crossOrigin
+                />
 
-                <meta name="description" content={description ? description : 'The documentation for Rocky Linux, the community-driven enterprise operating system.'} />
-                <meta name="keywords" content={keywords ? keywords : 'rocky linux, documentation, docs, tutorials, learning, linux, sysadmin'} />
+                <meta
+                    name="description"
+                    content={
+                        description
+                            ? description
+                            : 'The documentation for Rocky Linux, the community-driven enterprise operating system.'
+                    }
+                />
+                <meta
+                    name="keywords"
+                    content={
+                        keywords
+                            ? keywords
+                            : 'rocky linux, documentation, docs, tutorials, learning, linux, sysadmin'
+                    }
+                />
             </Helmet>
             <Navbar />
             <main className="dark:bg-gray-900 dark:text-gray-300 bg-white flex-grow mt-14">
-                <Container wide={wide}>
-                    {children}
-                </Container>
+                <Container wide={wide}>{children}</Container>
             </main>
             <Footer />
         </>

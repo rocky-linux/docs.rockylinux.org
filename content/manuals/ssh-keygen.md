@@ -8,9 +8,9 @@ The ssh-keygen utility is used for generating keys. It does this by using one of
 
 Some sample key formats that ssh-keygen supports are:
 
-- RSA
-- DSA
-- ECDSA
+-   RSA
+-   DSA
+-   ECDSA
 
 ## Creating SSH Keys
 
@@ -34,8 +34,8 @@ that you set a password on this SSH key. The ssh-keygen command will prompt you 
 ```shell
 $ ssh-keygen -f ~/.ssh/my-rocky-key-ecdsa -t ecdsa -b 521`
 Generating public/private ecdsa key pair.
-Enter passphrase (empty for no passphrase): 
-Enter same passphrase again: 
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
 Your identification has been saved in /home/user/.ssh/my-rocky-key-ecdsa
 Your public key has been saved in /home/user/.ssh/my-rocky-key-ecdsa.pub
 The key fingerprint is:

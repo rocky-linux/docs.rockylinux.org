@@ -1,19 +1,25 @@
-import { graphql } from "gatsby";
-import * as React from "react";
-import Page from "../components/Page";
+import { graphql } from 'gatsby';
+import * as React from 'react';
+import Page from '../components/Page';
 
-export default ({ data: { allMdx: { edges } } }) => {
+export default ({
+    data: {
+        allMdx: { edges },
+    },
+}) => {
     return (
         <Page meta={{ title: 'Manuals' }}>
             <h1>Manuals</h1>
             <hr />
 
-            { edges.map(({ node: item }) => (
+            {edges.map(({ node: item }) => (
                 <>
-                    <a href={`/${item.slug}`} key={item.id}>{item.frontmatter.title}</a>
+                    <a href={`/${item.slug}`} key={item.id}>
+                        {item.frontmatter.title}
+                    </a>
                     <br />
                 </>
-            )) }
+            ))}
         </Page>
     );
 };
@@ -24,7 +30,9 @@ export const pageQuery = graphql`
             edges {
                 node {
                     id
-                    frontmatter { title }
+                    frontmatter {
+                        title
+                    }
                     slug
                 }
             }

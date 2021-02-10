@@ -7,20 +7,20 @@ or don't know.
 
 ## Prerequisites
 
-* A computer to install to with a recommended hard drive size of 8GB or more.
-  NOTE that as far as this documentation is concerned, we assume you are using
-  the entire computer hard drive with no other OS to be used except
-  Rocky Linux.
-* A spare USB flash drive or other USB device that can be used only for the
-  installation (no other files on the drive)
-* An Internet connection for download and updates once the installation is
-  complete
-* Knowledge of the method of writing the installation image to your USB device
-  so that it is bootable
-* Knowledge of the target machine's method for booting to another device. This
-  is typically done by a key pressed during the POST. You may have to do a
-  little research on your machine's motherboard or BIOS in order to get this
-  information, but probably a simple Google search will get you what you need.
+-   A computer to install to with a recommended hard drive size of 8GB or more.
+    NOTE that as far as this documentation is concerned, we assume you are using
+    the entire computer hard drive with no other OS to be used except
+    Rocky Linux.
+-   A spare USB flash drive or other USB device that can be used only for the
+    installation (no other files on the drive)
+-   An Internet connection for download and updates once the installation is
+    complete
+-   Knowledge of the method of writing the installation image to your USB device
+    so that it is bootable
+-   Knowledge of the target machine's method for booting to another device. This
+    is typically done by a key pressed during the POST. You may have to do a
+    little research on your machine's motherboard or BIOS in order to get this
+    information, but probably a simple Google search will get you what you need.
 
 ## Install Steps (GUI/Anaconda) (Recommended)
 
@@ -65,7 +65,7 @@ TODO: Screenshot
 
 If you are using the entire drive of your target machine for Rocky Linux, the
 easiest way to get up and running is to simply take the default installation
-option. 
+option.
 
 TODO: Screenshot
 

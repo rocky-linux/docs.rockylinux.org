@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require('path');
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
     // Destructure the createPage function from the actions object
@@ -12,7 +12,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                         body
                         slug
                         tableOfContents
-                        frontmatter { title }
+                        frontmatter {
+                            title
+                        }
                     }
                 }
             }
@@ -32,7 +34,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                 id: node.id,
                 body: node.body,
                 headings: node.tableOfContents,
-                frontmatter: node.frontmatter
+                frontmatter: node.frontmatter,
             },
         });
     });
