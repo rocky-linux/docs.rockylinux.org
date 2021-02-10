@@ -46,7 +46,7 @@ export default ({ pageContext: { frontmatter, headings, body } }) => {
                         </h1>
                     </div>
                     <div
-                        className="bg-white shadow rounded dark:bg-gray-700 p-4 border-gray-400 mb-6"
+                        className="bg-white hover:shadow-lg hover:border-0 border rounded dark:bg-gray-700 p-4 border-gray-200 transition duration-300 ease-in-out mb-6"
                         style={{ minWidth: '300px', width: 'fit-content' }}
                     >
                         <b className="mb-2">Page Contents</b>
