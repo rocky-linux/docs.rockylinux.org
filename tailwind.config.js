@@ -37,7 +37,11 @@ module.exports = {
             },
         },
     },
-    variants: {},
+    variants: {
+        extend: {
+            backgroundOpacity: ['active']
+        }
+    },
     plugins: [
         require('@tailwindcss/typography'),
         require('@tailwindcss/forms'),

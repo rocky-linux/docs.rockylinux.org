@@ -57,3 +57,4 @@ pre { @apply p-4 rounded-lg }
 .prose img {
   @apply rounded-md;
 }
+
