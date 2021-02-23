@@ -41,10 +41,11 @@ module.exports = {
             __key: 'pages',
         },
         {
-            resolve: 'gatsby-source-filesystem',
+            resolve: `gatsby-source-git`,
             options: {
-                name: 'contents',
-                path: './content/',
+                name: `rocky-docs`,
+                remote: `https://github.com/rocky-linux/documentation.git`,
+                branch: `main`,
             },
             __key: 'contents',
         },
@@ -55,11 +56,5 @@ module.exports = {
                 remarkPlugins: [require('remark-slug')],
             },
         },
-        /*{
-            resolve: `gatsby-plugin-page-creator`,
-            options: {
-                path: `./src/content`,
-            },
-        },*/
     ],
 };

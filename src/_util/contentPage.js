@@ -6,6 +6,32 @@ import Page from '../components/Page';
 
 const components = { Link };
 
+const buildContentList = (headings, topLevel) => {
+    return (
+        <ul className={`list-inside${topLevel ? '' : ' pl-4'}`}>
+            {headings.items.map(buildContentItem)}
+        </ul>
+    );
+};
+
+const buildContentItem = (heading) => {
+    const { title, url } = heading;
+    let inner = null;
+
+    if (heading.items) {
+        inner = buildContentList(heading);
+    }
+
+    return (
+        <li key={url}>
+            <a className="dark:text-gray-200 text-gray-600" href={url}>
+                {title}
+            </a>
+            {inner}
+        </li>
+    );
+};
+
 export default ({ pageContext: { frontmatter, headings, body } }) => {
     return (
         <Page wide meta={{ title: frontmatter.title }}>
@@ -39,35 +65,28 @@ export default ({ pageContext: { frontmatter, headings, body } }) => {
                         </li>
                     </ul>
                 </div>
-                <div className="md:col-span-2 lg:col-span-3 xl:col-span-4">
-                    <div className="mb-6">
-                        <h1 className="text-4xl dark:text-white">
-                            {frontmatter.title}
-                        </h1>
-                    </div>
+
+                <div className="md:col-span-2 lg:col-span-3 xl:col-span-3">
                     <div
-                        className="bg-white hover:shadow-lg hover:border-0 border rounded dark:bg-gray-700 p-4 border-gray-200 transition duration-300 ease-in-out mb-6"
-                        style={{ minWidth: '300px', width: 'fit-content' }}
+                        className="block xl:hidden border-l-4 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6"
+                        style={{ height: 'fit-content' }}
                     >
                         <b className="mb-2">Page Contents</b>
-                        <ul className="list-disc list-inside pl-4">
-                            {headings.items.map(({ title, url }) => (
-                                <li key={url}>
-                                    <a
-                                        className="text-green-500 underline"
-                                        href={url}
-                                    >
-                                        {title}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
+                        {buildContentList(headings, true)}
                     </div>
-                    <div className="prose max-w-full dark-mode:prose-dark dark:text-gray-300 pb-10">
+                    <div className="max-w-screen-md prose dark-mode:prose-dark dark:text-gray-300 pb-10">
                         <MDXProvider components={components}>
                             <MDXRenderer>{body}</MDXRenderer>
                         </MDXProvider>
                     </div>
+                </div>
+
+                <div
+                    className="hidden xl:block border-l-4 dark:border-gray-600 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6"
+                    style={{ height: 'fit-content' }}
+                >
+                    <b className="mb-2">Page Contents</b>
+                    {buildContentList(headings, true)}
                 </div>
             </div>
         </Page>

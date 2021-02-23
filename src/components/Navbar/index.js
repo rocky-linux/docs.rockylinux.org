@@ -14,7 +14,7 @@ export default () => {
 
             window.addEventListener('scroll', handle);
             return () => window.removeEventListener('scroll', handle);
-        }, [window.scrollY]);
+        });
     }
 
     return (

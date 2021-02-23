@@ -14,8 +14,9 @@ module.exports = {
                 gray: colors.gray,
             },
             fontFamily: {
-                display: ['RockyDisplay', 'sans-serif'],
-                sans: ['RockyText', 'sans-serif'],
+                display: ['Red Hat Display', 'sans-serif'],
+                sans: ['Red Hat Text', 'sans-serif'],
+                monospace: ['Overpass Mono', 'sans-serif'],
             },
             spacing: {
                 1: '4px',
