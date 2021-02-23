@@ -44,8 +44,8 @@ module.exports = {
             resolve: `gatsby-source-git`,
             options: {
                 name: `rocky-docs`,
-                remote: `https://github.com/rocky-linux/documentation.git`,
-                branch: `main`,
+                remote: `https://github.com/hbjydev/documentation.git`,
+                branch: `docs-site-changes`,
             },
             __key: 'contents',
         },
@@ -53,7 +53,10 @@ module.exports = {
             resolve: 'gatsby-plugin-mdx',
             options: {
                 extensions: [`.mdx`, `.md`],
-                remarkPlugins: [require('remark-slug')],
+                remarkPlugins: [
+                    require('remark-slug'),
+                    require('remark-highlight.js'),
+                ],
             },
         },
     ],

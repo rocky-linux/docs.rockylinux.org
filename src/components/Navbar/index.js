@@ -20,7 +20,7 @@ export default () => {
     return (
         <>
             <div
-                className={`navbar h-14 bg-white dark:bg-gray-900 px-4 flex items-center text-black dark:text-white sm:hidden fixed w-full transition duration-300 ease-in-out z-50${
+                className={`navbar h-14 bg-white dark:bg-gray-900 px-4 flex items-center text-black dark:text-white sm:hidden fixed w-full transition duration-300 ease-in-out z-50 ${
                     scrollPos > 0 ? ' shadow-lg' : ''
                 }`}
             >
@@ -56,13 +56,13 @@ export default () => {
             </div>
 
             <div
-                className={`navbar h-14 bg-white dark:bg-gray-900 px-4 flex justify-center items-center text-black dark:text-white hidden sm:flex fixed w-full transition duration-300 ease-in-out z-50${
+                className={`navbar h-14 bg-white dark:bg-gray-900 px-4 flex justify-center items-center text-black dark:text-white hidden sm:flex fixed w-full transition duration-300 ease-in-out z-50 ${
                     scrollPos > 0 ? ' shadow-md' : ''
                 }`}
             >
                 <div
                     id="inner"
-                    className="max-w-screen-lg w-full flex items-center"
+                    className="max-w-screen-2xl w-full flex items-center"
                 >
                     <div className="flex items-center">
                         <a href="https://rockylinux.org">
