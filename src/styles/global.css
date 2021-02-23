@@ -107,3 +107,7 @@ pre {
 .prose img {
     @apply rounded-md;
 }
+
+.prose > ul > li > code {
+    margin: 0 !important;
+}
