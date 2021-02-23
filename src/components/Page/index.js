@@ -26,35 +26,6 @@ export default ({ children, wide, meta: { title, description, keywords } }) => {
             <Helmet>
                 <title>{title} - Rocky Linux Documentation</title>
 
-                <link
-                    rel="preload"
-                    href="https://rockylinux.org/fonts/RockyDisplay/RockyDisplay-Medium.woff2"
-                    as="font"
-                    type="font/woff2"
-                    crossOrigin
-                />
-                <link
-                    rel="preload"
-                    href="https://rockylinux.org/fonts/RockyText/RockyText-Bold.woff2"
-                    as="font"
-                    type="font/woff2"
-                    crossOrigin
-                />
-                <link
-                    rel="preload"
-                    href="https://rockylinux.org/fonts/RockyText/RockyText-Medium.woff2"
-                    as="font"
-                    type="font/woff2"
-                    crossOrigin
-                />
-                <link
-                    rel="preload"
-                    href="https://rockylinux.org/fonts/RockyText/RockyText-Regular.woff2"
-                    as="font"
-                    type="font/woff2"
-                    crossOrigin
-                />
-
                 <meta
                     name="description"
                     content={

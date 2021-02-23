@@ -1,0 +1,64 @@
+@font-face {
+    font-family: 'RockyDisplay';
+    src: url('fonts/RockyDisplay/RockyDisplay-Regular.eot');
+    /* IE9 Compat Modes */
+    src: url('fonts/RockyDisplay/RockyDisplay-Regular.eot?#iefix')
+            format('embedded-opentype'),
+        url('fonts/RockyDisplay/RockyDisplay-Regular.woff2') format('woff2');
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: 300;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'RockyDisplay';
+    src: url('fonts/RockyDisplay/RockyDisplay-Medium.eot');
+    /* IE9 Compat Modes */
+    src: url('fonts/RockyDisplay/RockyDisplay-Medium.eot?#iefix')
+            format('embedded-opentype'),
+        url('fonts/RockyDisplay/RockyDisplay-Medium.woff2') format('woff2');
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'RockyDisplay';
+    src: url('fonts/RockyDisplay/RockyDisplay-Bold.eot');
+    /* IE9 Compat Modes */
+    src: url('fonts/RockyDisplay/RockyDisplay-Bold.eot?#iefix')
+            format('embedded-opentype'),
+        url('fonts/RockyDisplay/RockyDisplay-Bold.woff2') format('woff2');
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: 700;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'RockyText';
+    src: url('fonts/RockyText/RockyText-Regular.eot');
+    /* IE9 Compat Modes */
+    src: url('fonts/RockyText/RockyText-Regular.eot?#iefix')
+            format('embedded-opentype'),
+        url('fonts/RockyText/RockyText-Regular.woff2') format('woff2');
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'RockyText';
+    src: url('fonts/RockyText/RockyText-Medium.eot');
+    /* IE9 Compat Modes */
+    src: url('fonts/RockyText/RockyText-Medium.eot?#iefix')
+            format('embedded-opentype'),
+        url('fonts/RockyText/RockyText-Medium.woff2') format('woff2');
+    /* Modern Browsers */
+    font-style: normal;
+    font-weight: 700;
+    text-rendering: optimizeLegibility;
+}
