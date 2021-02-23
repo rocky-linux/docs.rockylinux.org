@@ -108,6 +108,7 @@ pre {
     @apply rounded-md;
 }
 
+.prose > ol > li > code,
 .prose > ul > li > code {
     margin: 0 !important;
 }
