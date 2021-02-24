@@ -26,7 +26,7 @@ export default () => {
                     scrollPos > 0 ? ' shadow-lg' : ''
                 }`}
             >
-                <button 
+                <button
                     className="menuIcon w-6 h-6 mr-3"
                     onClick={() => setIsOpen(!isOpen)}
                 >
@@ -69,7 +69,10 @@ export default () => {
                                                 />
                                             </svg>
                                         </a>
-                                        <Link to="/" className="flex items-center">
+                                        <Link
+                                            to="/"
+                                            className="flex items-center"
+                                        >
                                             <div className="w-4 h-4 mx-2">
                                                 <ChevronRightOutline />
                                             </div>
