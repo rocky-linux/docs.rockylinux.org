@@ -1,48 +1,24 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby minimal starter
-</h1>
+# docs.rockylinux.org
 
-## 🚀 Quick start
+[![Website](https://img.shields.io/website?up_message=up&url=https%3A%2F%2Frockylinux-docs.vercel.app)](https://rockylinux-docs.vercel.app)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/rocky-linux/docs.rockylinux.org/master.svg)](https://results.pre-commit.ci/latest/github/rocky-linux/docs.rockylinux.org/master)
 
-1.  **Create a Gatsby site.**
+The Rocky Linux documentation site UI, built using [Gatsby](https://gatsbyjs.com) and [TailwindCSS](https://tailwindcss.com).
 
-    Use the Gatsby CLI to create a new site, specifying the minimal starter.
+## Start Development Server
 
-    ```shell
-    # create a new Gatsby site using the minimal starter
-    npm init gatsby
-    ```
+1. Install dependencies via NPM.
 
-2.  **Start developing.**
+```bash
+npm i
+```
 
-    Navigate into your new site’s directory and start it up.
+2. Start the development server.
 
-    ```shell
-    cd my-gatsby-site/
-    npm run develop
-    ```
+```bash
+gatsby develop
+```
 
-3.  **Open the code and start customizing!**
+## Contributing
 
-    Your site is now running at http://localhost:8000!
-
-    Edit `src/pages/index.js` to see your site update in real-time!
-
-4.  **Learn more**
-
-    -   [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-    -   [Tutorials](https://www.gatsbyjs.com/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-    -   [Guides](https://www.gatsbyjs.com/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-    -   [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-    -   [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-    -   [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
+We welcome your contributions! Please refer to our [contributing policies](https://github.com/rocky-linux/docs.rockylinux.org/blob/master/CONTRIBUTING.md) prior to submitting pull requests.
