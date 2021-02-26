@@ -19,8 +19,15 @@ import Navbar from '../Navbar';
  * A default page container, used to template other pages in the site.
  *
  * @param {PageOptions} options The options to instantiate the site with.
+ * @param {boolean} wide Whether the page should be wider than usual
+ * @param {boolean} ultrawide Whether the page should take up the width of the viewport
  */
-export default ({ children, wide, meta: { title, description, keywords } }) => {
+export default ({
+    children,
+    wide,
+    ultrawide,
+    meta: { title, description, keywords },
+}) => {
     return (
         <>
             <Helmet>
@@ -43,9 +50,11 @@ export default ({ children, wide, meta: { title, description, keywords } }) => {
                     }
                 />
             </Helmet>
-            <Navbar />
+            <Navbar ultrawide={ultrawide} />
             <main className="dark:bg-gray-900 dark:text-gray-300 bg-white flex-grow mt-14">
-                <Container wide={wide}>{children}</Container>
+                <Container ultrawide={ultrawide} wide={wide}>
+                    {children}
+                </Container>
             </main>
             <Footer />
         </>

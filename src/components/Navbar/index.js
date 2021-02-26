@@ -6,7 +6,7 @@ import { Link } from 'gatsby';
 import React, { useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 
-export default () => {
+export default ({ ultrawide }) => {
     const [scrollPos, setScrollPos] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -183,7 +183,9 @@ export default () => {
             >
                 <div
                     id="inner"
-                    className="max-w-screen-2xl w-full flex items-center"
+                    className={`${
+                        ultrawide ? '' : 'max-w-screen-2xl'
+                    } w-full flex items-center`}
                 >
                     <div className="flex items-center">
                         <a href="https://rockylinux.org">

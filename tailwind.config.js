@@ -35,6 +35,10 @@ module.exports = {
                 14: '56px',
                 15: '60px',
                 16: '64px',
+                24: '96px',
+            },
+            height: {
+                fc: 'fit-content',
             },
         },
     },
