@@ -34,8 +34,13 @@ const buildContentItem = (heading) => {
 };
 
 export default ({ pageContext: { frontmatter, headings, body } }) => {
+    let title = frontmatter.title;
+    if (!frontmatter.title) {
+        title = headings.items[0].title;
+    }
+
     return (
-        <Page ultrawide meta={{ title: frontmatter.title }}>
+        <Page ultrawide meta={{ title: title }}>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 <div>
                     <h4 className="text-lg mb-2 font-bold">Manuals</h4>
