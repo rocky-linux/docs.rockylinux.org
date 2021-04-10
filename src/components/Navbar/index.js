@@ -6,18 +6,18 @@ import { Link } from 'gatsby';
 import React, { useState, useEffect } from 'react';
 import { Transition } from '@headlessui/react';
 
-export default ({ ultrawide }) => {
+const Navbar = ({ ultrawide }) => {
     const [scrollPos, setScrollPos] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
 
-    if (typeof window !== 'undefined') {
+    //if (typeof window !== 'undefined') {
         useEffect(() => {
             const handle = () => setScrollPos(window.scrollY);
 
             window.addEventListener('scroll', handle);
             return () => window.removeEventListener('scroll', handle);
         });
-    }
+    //}
 
     return (
         <>
@@ -235,3 +235,5 @@ export default ({ ultrawide }) => {
         </>
     );
 };
+
+export default Navbar;

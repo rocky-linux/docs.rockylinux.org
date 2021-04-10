@@ -2,11 +2,12 @@ import * as React from 'react';
 import { Link } from 'gatsby';
 import Page from '../components/Page';
 
-export default () => {
+const NotFoundPage = () => {
     return (
         <Page meta={{ title: 'Not found' }}>
-            <h1>Page not found</h1>
-            <p>
+            <center>
+            <h1 className="mb-5">Page not found</h1>
+            <p className="text-sm text-gray-400">
                 Sorry{' '}
                 <span role="img" aria-label="Pensive emoji">
                     😔
@@ -23,6 +24,9 @@ export default () => {
                 <br />
                 <Link to="/">Go home</Link>.
             </p>
+            </center>
         </Page>
     );
 };
+
+export default NotFoundPage;

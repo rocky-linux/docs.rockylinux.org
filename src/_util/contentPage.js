@@ -33,7 +33,7 @@ const buildContentItem = (heading) => {
     );
 };
 
-export default ({ pageContext: { frontmatter, headings, body } }) => {
+const contentPage = ({ pageContext: { frontmatter, headings, body } }) => {
     let title = frontmatter.title;
     if (!frontmatter.title) {
         title = headings.items[0].title;
@@ -71,3 +71,5 @@ export default ({ pageContext: { frontmatter, headings, body } }) => {
         </Page>
     );
 };
+
+export default contentPage;

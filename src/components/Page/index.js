@@ -22,7 +22,7 @@ import Navbar from '../Navbar';
  * @param {boolean} wide Whether the page should be wider than usual
  * @param {boolean} ultrawide Whether the page should take up the width of the viewport
  */
-export default ({
+const Page = ({
     children,
     wide,
     ultrawide,
@@ -60,3 +60,5 @@ export default ({
         </>
     );
 };
+
+export default Page;

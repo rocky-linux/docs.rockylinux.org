@@ -5,7 +5,7 @@ import * as React from 'react';
  *
  * @param {boolean} wide Whether or not the box should be wide
  */
-export default ({ children, wide, ultrawide }) => {
+const Container = ({ children, wide, ultrawide }) => {
     const widthClass = wide
         ? 'max-w-screen-2xl 2xl:px-0'
         : ultrawide
@@ -17,3 +17,5 @@ export default ({ children, wide, ultrawide }) => {
         </div>
     );
 };
+
+export default Container;
