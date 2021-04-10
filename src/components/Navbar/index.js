@@ -115,22 +115,12 @@ export default ({ ultrawide }) => {
                                     </li>
                                     <li>
                                         <Link
-                                            to="/manuals"
-                                            aria-label="Manuals"
-                                            title="Manuals"
+                                            to="/site-index"
+                                            aria-label="Index"
+                                            title="Site Index"
                                             className="font-medium tracking-wide text-gray-700 dark:text-white transition-colors duration-200 hover:text-green-500"
                                         >
-                                            Manuals
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link
-                                            to="/guides"
-                                            aria-label="Guides"
-                                            title="Guides"
-                                            className="font-medium tracking-wide text-gray-700 dark:text-white transition-colors duration-200 hover:text-green-500"
-                                        >
-                                            Guides
+                                            Index
                                         </Link>
                                     </li>
                                     <li>
@@ -224,19 +214,11 @@ export default ({ ultrawide }) => {
                             </Link>
                             <Link
                                 className="text-sm mr-4"
-                                to="/manuals"
+                                to="/site-index"
                                 partiallyActive={true}
                                 activeClassName="font-bold"
                             >
-                                Manuals
-                            </Link>
-                            <Link
-                                className="text-sm mr-4"
-                                to="/guides"
-                                partiallyActive={true}
-                                activeClassName="font-bold"
-                            >
-                                Guides
+                                Index
                             </Link>
                             <Link
                                 className="text-sm mr-4"
