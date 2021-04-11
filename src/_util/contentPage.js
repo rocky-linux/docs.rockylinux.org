@@ -6,11 +6,14 @@ import Page from '../components/Page';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
 
 const a = props => {
+    let href = props.href;
     if (props.href && props.href.endsWith('.md')) {
-        props.href = props.href.replace('.md', '');
+        href = props.href.replace('.md', '');
     }
 
-    return <Link to={props.href} target={props.target} />
+    const linkProps = { ...props, href };
+
+    return <a {...linkProps} />
 };
 
 const components = { Link, a };
