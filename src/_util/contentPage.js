@@ -5,7 +5,15 @@ import * as React from 'react';
 import Page from '../components/Page';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
 
-const components = { Link };
+const a = props => {
+    if (props.href && props.href.endsWith('.md')) {
+        props.href = props.href.replace('.md', '');
+    }
+
+    return <Link to={props.href} target={props.target} />
+};
+
+const components = { Link, a };
 
 const buildContentList = (headings, topLevel) => {
     return (
