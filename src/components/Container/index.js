@@ -5,14 +5,11 @@ import * as React from 'react';
  *
  * @param {boolean} wide Whether or not the box should be wide
  */
-const Container = ({ children, wide, ultrawide }) => {
-    const widthClass = wide
-        ? 'max-w-screen-2xl 2xl:px-0'
-        : ultrawide
-        ? ''
-        : 'max-w-screen-lg';
+const Container = ({ children, wide, ultrawide, noPadTop }) => {
+    const widthClass = wide ? 'max-w-screen-lg 2xl:px-0' : (ultrawide ? '' : 'max-w-screen-lg');
+    const paddingTop = noPadTop ? '' : 'pt-10'
     return (
-        <div className={`${widthClass} w-full mx-auto px-4 pt-10`}>
+        <div className={`${widthClass} w-full mx-auto px-4 ${paddingTop}`}>
             {children}
         </div>
     );

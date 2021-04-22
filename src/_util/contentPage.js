@@ -4,6 +4,7 @@ import { MDXProvider } from '@mdx-js/react';
 import * as React from 'react';
 import Page from '../components/Page';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
+import Container from '../components/Container';
 
 const a = props => {
     let href = props.href;
@@ -52,30 +53,30 @@ const contentPage = ({ pageContext: { frontmatter, headings, body } }) => {
 
     return (
         <Page ultrawide meta={{ title: title }}>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                <div></div>
+            <Container wide noPadTop>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div className="md:col-span-2 lg:col-span-3 xl:col-span-3">
+                        <div
+                            className="text-sm block xl:hidden border-l-4 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6"
+                            style={{
+                                height: 'fit-content',
+                                '-moz-height': '-moz-fit-content',
+                            }}
+                        >
+                            {buildContentList(headings, true)}
+                        </div>
+                        <div className="max-w-screen-md prose dark-mode:prose-dark dark:text-gray-300 pb-10">
+                            <MDXProvider components={components}>
+                                <MDXRenderer>{body}</MDXRenderer>
+                            </MDXProvider>
+                        </div>
+                    </div>
 
-                <div className="md:col-span-2 lg:col-span-3 xl:col-span-3">
-                    <div
-                        className="text-sm block xl:hidden border-l-4 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6"
-                        style={{
-                            height: 'fit-content',
-                            '-moz-height': '-moz-fit-content',
-                        }}
-                    >
+                    <div className="hidden sticky top-24 text-sm xl:block border-l-4 dark:border-gray-600 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6 h-fc">
                         {buildContentList(headings, true)}
                     </div>
-                    <div className="max-w-screen-md prose dark-mode:prose-dark dark:text-gray-300 pb-10">
-                        <MDXProvider components={components}>
-                            <MDXRenderer>{body}</MDXRenderer>
-                        </MDXProvider>
-                    </div>
                 </div>
-
-                <div className="hidden sticky top-24 text-sm xl:block border-l-4 dark:border-gray-600 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6 h-fc">
-                    {buildContentList(headings, true)}
-                </div>
-            </div>
+            </Container>
         </Page>
     );
 };
