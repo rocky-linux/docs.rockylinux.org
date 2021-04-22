@@ -53,10 +53,7 @@ const contentPage = ({ pageContext: { frontmatter, headings, body } }) => {
     return (
         <Page ultrawide meta={{ title: title }}>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                <div>
-                    <h4 className="text-lg mb-2 font-bold">Manuals</h4>
-                    <p>TOC coming soon...</p>
-                </div>
+                <div></div>
 
                 <div className="md:col-span-2 lg:col-span-3 xl:col-span-3">
                     <div

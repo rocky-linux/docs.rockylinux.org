@@ -26,6 +26,7 @@ const Page = ({
     children,
     wide,
     ultrawide,
+    nopad,
     meta: { title, description, keywords },
 }) => {
     return (
@@ -52,9 +53,12 @@ const Page = ({
             </Helmet>
             <Navbar ultrawide={ultrawide} />
             <main className="dark:bg-gray-900 dark:text-gray-300 bg-white flex-grow mt-14 mb-8">
-                <Container ultrawide={ultrawide} wide={wide}>
-                    {children}
-                </Container>
+                { !nopad ?
+                    <Container ultrawide={ultrawide} wide={wide}>
+                        {children}
+                    </Container> :
+                    children
+                }
             </main>
             <Footer />
         </>
