@@ -18,11 +18,15 @@ const a = props => {
 const components = { Link, a };
 
 const buildContentList = (headings, topLevel) => {
-    return (
-        <ul className={`list-inside${topLevel ? '' : ' pl-2'}`}>
-            {headings.items.map(buildContentItem)}
-        </ul>
-    );
+    if (headings.items) {
+        return (
+            <ul className={`list-inside${topLevel ? '' : ' pl-2'}`}>
+                {headings.items.map(buildContentItem)}
+            </ul>
+        );
+    } else {
+        return null;
+    }
 };
 
 const buildContentItem = (heading) => {
@@ -45,7 +49,7 @@ const buildContentItem = (heading) => {
 
 const contentPage = ({ pageContext: { frontmatter, headings, body, relativePath } }) => {
     let title = frontmatter.title;
-    if (!frontmatter.title) {
+    if (!frontmatter.title && headings.items) {
         title = headings.items[0].title;
     }
 

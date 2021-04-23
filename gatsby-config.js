@@ -44,7 +44,7 @@ module.exports = {
             resolve: `gatsby-source-git`,
             options: {
                 name: `rocky-docs`,
-                remote: `https://github.com/hbjydev/documentation.git`,
+                remote: `https://github.com/rocky-linux/documentation.git`,
                 branch: `main`,
             },
             __key: 'contents',
