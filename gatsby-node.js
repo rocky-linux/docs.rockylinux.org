@@ -30,16 +30,17 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     // you'll call `createPage` for each result
     posts.forEach(({ node: { relativePath, childMdx: node } }) => {
         if (node !== null) {
-            relativePath = relativePath.replace('.md', '');
-            relativePath = relativePath.replace('.mdx', '');
+            let relativePathNoExt = relativePath.replace('.md', '');
+            relativePathExt = relativePathNoExt.replace('.mdx', '');
             createPage({
-                path: `/${relativePath}`,
+                path: `/${relativePathExt}`,
                 component: path.resolve(`./src/_util/contentPage.js`),
                 context: {
                     id: node.id,
                     body: node.body,
                     headings: node.tableOfContents,
                     frontmatter: node.frontmatter,
+                    relativePath: relativePath
                 },
             });
         }

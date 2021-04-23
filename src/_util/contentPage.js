@@ -12,9 +12,7 @@ const a = props => {
         href = props.href.replace('.md', '');
     }
 
-    const linkProps = { ...props, href };
-
-    return <a {...linkProps} />
+    return <a {...props} href={href} />
 };
 
 const components = { Link, a };
@@ -45,7 +43,7 @@ const buildContentItem = (heading) => {
     );
 };
 
-const contentPage = ({ pageContext: { frontmatter, headings, body } }) => {
+const contentPage = ({ pageContext: { frontmatter, headings, body, relativePath } }) => {
     let title = frontmatter.title;
     if (!frontmatter.title) {
         title = headings.items[0].title;
@@ -57,13 +55,17 @@ const contentPage = ({ pageContext: { frontmatter, headings, body } }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div className="md:col-span-2 lg:col-span-3 xl:col-span-3">
                         <div
-                            className="text-sm block xl:hidden border-l-4 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6"
+                            className="text-sm block xl:hidden border-l-4 w-full pl-4 border-gray-200 dark:border-gray-600 transition duration-300 ease-in-out mb-6"
                             style={{
                                 height: 'fit-content',
                                 '-moz-height': '-moz-fit-content',
                             }}
                         >
                             {buildContentList(headings, true)}
+                            <hr className="w-full border-1 dark:border-gray-600 border-gray-200 border my-2" />
+                            <a className="text-sm" href={`https://github.com/rocky-linux/documentation/blob/main/${relativePath}`}>
+                                Edit this page
+                            </a>
                         </div>
                         <div className="max-w-screen-md prose dark-mode:prose-dark dark:text-gray-300 pb-10">
                             <MDXProvider components={components}>
@@ -74,6 +76,11 @@ const contentPage = ({ pageContext: { frontmatter, headings, body } }) => {
 
                     <div className="hidden sticky top-24 text-sm xl:block border-l-4 dark:border-gray-600 w-full pl-4 border-gray-200 transition duration-300 ease-in-out mb-6 h-fc">
                         {buildContentList(headings, true)}
+
+                        <hr className="w-full border-1 dark:border-gray-600 border my-2" />
+                        <a className="text-sm" href={`https://github.com/rocky-linux/documentation/blob/main/${relativePath}`}>
+                            Edit this page
+                        </a>
                     </div>
                 </div>
             </Container>

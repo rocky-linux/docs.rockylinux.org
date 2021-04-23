@@ -25,9 +25,9 @@ const SiteIndexPage = ({ data }) => {
                         let excerpt = item.excerpt.replace(title, '').trim();
 
                         return (
-                            <a key={index} href={item.slug} className="bg-white shadow-md hover:shadow-lg rounded-md flex flex-col p-6 transition duration-200">
+                            <a key={index} href={item.slug} className="bg-white dark:bg-gray-700 shadow-md hover:shadow-lg rounded-md flex flex-col p-6 transition duration-200">
                                 <h5 className="mb-2 font-bold dark:text-gray-300">{title}</h5>
-                                <p className="text-sm text-gray-500 break-words">{excerpt}</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 break-words">{excerpt}</p>
                             </a>
                         );
                     })}
