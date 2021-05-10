@@ -102,7 +102,8 @@ const Footer = () => {
                     className="mt-8 text-center text-base text-gray-500"
                     dir="auto"
                 >
-                    © {new Date().getFullYear()} Rocky Enterprise Software Foundation. All rights reserved.
+                    © {new Date().getFullYear()} Rocky Enterprise Software
+                    Foundation. All rights reserved.
                 </p>
             </div>
         </footer>

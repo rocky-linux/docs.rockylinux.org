@@ -53,12 +53,13 @@ const Page = ({
             </Helmet>
             <Navbar ultrawide={ultrawide} />
             <main className="dark:bg-gray-900 dark:text-gray-300 bg-white flex-grow mt-14 mb-8">
-                { !nopad ?
+                {!nopad ? (
                     <Container ultrawide={ultrawide} wide={wide}>
                         {children}
-                    </Container> :
+                    </Container>
+                ) : (
                     children
-                }
+                )}
             </main>
             <Footer />
         </>
