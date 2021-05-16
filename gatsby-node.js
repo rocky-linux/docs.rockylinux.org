@@ -40,7 +40,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
                     body: node.body,
                     headings: node.tableOfContents,
                     frontmatter: node.frontmatter,
-                    relativePath: relativePath
+                    relativePath: relativePath,
                 },
             });
         }

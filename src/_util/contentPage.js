@@ -6,13 +6,13 @@ import Page from '../components/Page';
 import 'highlight.js/styles/atom-one-dark-reasonable.css';
 import Container from '../components/Container';
 
-const a = props => {
+const a = (props) => {
     let href = props.href;
     if (props.href && props.href.endsWith('.md')) {
         href = props.href.replace('.md', '');
     }
 
-    return <a {...props} href={href} />
+    return <a {...props} href={href} />;
 };
 
 const components = { Link, a };
@@ -47,14 +47,19 @@ const buildContentItem = (heading) => {
     );
 };
 
-const contentPage = ({ pageContext: { frontmatter, headings, body, relativePath } }) => {
+const contentPage = ({
+    pageContext: { frontmatter, headings, body, relativePath },
+}) => {
     let title = frontmatter.title;
     if (!frontmatter.title && headings.items) {
         title = headings.items[0].title;
     }
 
     return (
-        <Page ultrawide meta={{ title: title, description: body.substring(0, 153) + '...' }}>
+        <Page
+            ultrawide
+            meta={{ title: title, description: body.substring(0, 153) + '...' }}
+        >
             <Container wide noPadTop>
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <div className="md:col-span-2 lg:col-span-3 xl:col-span-3">
@@ -67,7 +72,10 @@ const contentPage = ({ pageContext: { frontmatter, headings, body, relativePath 
                         >
                             {buildContentList(headings, true)}
                             <hr className="w-full border-1 dark:border-gray-600 border-gray-200 border my-2" />
-                            <a className="text-sm" href={`https://github.com/rocky-linux/documentation/blob/main/${relativePath}`}>
+                            <a
+                                className="text-sm"
+                                href={`https://github.com/rocky-linux/documentation/blob/main/${relativePath}`}
+                            >
                                 Edit this page
                             </a>
                         </div>
@@ -82,7 +90,10 @@ const contentPage = ({ pageContext: { frontmatter, headings, body, relativePath 
                         {buildContentList(headings, true)}
 
                         <hr className="w-full border-1 dark:border-gray-600 border my-2" />
-                        <a className="text-sm" href={`https://github.com/rocky-linux/documentation/blob/main/${relativePath}`}>
+                        <a
+                            className="text-sm"
+                            href={`https://github.com/rocky-linux/documentation/blob/main/${relativePath}`}
+                        >
                             Edit this page
                         </a>
                     </div>
