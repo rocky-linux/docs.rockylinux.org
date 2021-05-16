@@ -25,6 +25,20 @@ module.exports = {
         'gatsby-plugin-offline',
         'gatsby-transformer-sharp',
         {
+            resolve: `gatsby-transformer-remark`,
+            options: {
+                plugins: [
+                    {
+                        resolve: `gatsby-remark-relative-images`,
+                    },
+                    {
+                        resolve: `gatsby-remark-images`,
+                    },
+                ],
+            },
+        },
+        'gatsby-remark-images',
+        {
             resolve: 'gatsby-source-filesystem',
             options: {
                 name: 'images',
@@ -53,6 +67,22 @@ module.exports = {
             resolve: 'gatsby-plugin-mdx',
             options: {
                 extensions: [`.mdx`, `.md`],
+                gatsbyRemarkPlugins: [
+                    {
+                        resolve: `gatsby-transformer-remark`,
+                        options: {
+                            plugins: [
+                                {
+                                    resolve: `gatsby-remark-relative-images`,
+                                },
+                                {
+                                    resolve: `gatsby-remark-images`,
+                                },
+                            ],
+                        },
+                    },
+                    'gatsby-remark-images',
+                ],
                 remarkPlugins: [
                     require('remark-slug'),
                     require('remark-highlight.js'),
