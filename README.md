@@ -13,7 +13,15 @@ The Rocky Linux documentation site UI, built using [Docusaurus](https://docusaur
 npm i
 ```
 
-2. Start the development server.
+2. Clone a copy of the Docs repo
+
+```
+git clone git@github.com:rocky-linux/documentation.git docs
+```
+
+> NOTE: While in POC stage, the _correct_ docs structure is available on [my branch](https://github.com/hbjydev/rldocs).
+
+3. Start the development server.
 
 ```bash
 npm run start
