@@ -1,0 +1,6 @@
+# Public output
+site/
+public/
+
+# Docs sources
+docs/
