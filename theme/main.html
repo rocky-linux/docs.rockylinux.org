@@ -11,4 +11,13 @@
 <script src="{{ 'assets/javascripts/iframe-worker.js' | url }}"></script>
 <script src="{{ 'search/search_index.js' | url }}"></script>
 {% endif %}
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for (let registration of registrations) {
+        registration.unregister();
+      }
+    });
+  }
+</script>
 {% endblock %}
