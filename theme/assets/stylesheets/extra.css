@@ -10,4 +10,4 @@
     --md-accent-fg-color--dark:  #059669;
 }
 
-.md-sidebar--primary .md-nav__link { display: flex }
+.md-sidebar--primary .md-nav__link { display: flex; justify-content: space-between }
