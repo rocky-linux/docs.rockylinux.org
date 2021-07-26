@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "load-docs": "rm -rf docs; git clone https://github.com/hbjydev/rldocs docs",
+    "load-docs": "rm -rf docs; git clone https://github.com/rocky-linux/documentation docs",
     "dev": "mkdocs serve",
     "build": "mkdocs build -d public"
   }
