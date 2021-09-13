@@ -66,8 +66,6 @@ plugins:
           sv: Svenska
 
 extra:
-  version:
-    provider: mike
   alternate:
     - name: Default (en)
       link: ./
