@@ -33,3 +33,11 @@
 }
 
 .md-sidebar--primary .md-nav__link { display: flex; justify-content: space-between }
+
+/*
+Override reduced font size in admonitions and collapsible sections back to body size
+ */
+
+.md-typeset .admonition, .md-typeset details {
+    font-size: .8rem;
+}

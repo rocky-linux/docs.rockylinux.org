@@ -1,21 +1,10 @@
 ---
-site_name: 'Rocky Linux Documentation'
+site_name: 'Documentation'
 site_url: 'https://docs.rockylinux.org'
 docs_dir: 'docs/docs'
 repo_url: https://github.com/rocky-linux/documentation
 repo_name: rocky-linux/documentation
-edit_uri: 'edit/main/docs/'
-
-nav:
-    - Table of Contents: index.md
-    - Guides:
-        - ... | guides/**/
-    - Books:
-        - ... | books/**/
-    - Labs:
-        - ... | labs/**/
-    - Release Notes:
-        - ... | release_notes/*.md
+edit_uri: ''
 
 theme:
   name: material
@@ -26,19 +15,20 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.top
+    - search.suggest
   logo: assets/logo.png
-  favicon: assets/logo.png
+  favicon: assets/favicon.png
   palette:
     - scheme: default
       media: "(prefers-color-scheme: light)"
       toggle:
-        icon: material/weather-sunny
+        icon: material/weather-night
         name: Switch to dark mode
       primary: black
     - scheme: slate
       media: "(prefers-color-scheme: dark)"
       toggle:
-        icon: material/weather-night
+        icon: material/weather-sunny
         name: Switch to light mode
       primary: black
 
@@ -55,26 +45,53 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.keys
   - pymdownx.tabbed
+  - pymdownx.details
+  - pymdownx.tasklist
   - footnotes
   - def_list
-  - pymdownx.tasklist
   - meta
 
 plugins:
   - search
-  - localsearch
   - awesome-pages
   - i18n:
       default_language: en
       languages:
-        en: English
-        fr: Français
-        es: Español
-        jp: 日本語
-        zh_CN: 简体中文
-        sv: Svenska
+          en: English
+          de: Deutsch
+          fr: Français
+          es: Español
+          jp: 日本語
+          zh_CN: 简体中文
+          sv: Svenska
 
-extra: 
+extra:
+  alternate:
+    - name: Default (en)
+      link: ./
+      lang: en
+    - name: English
+      link: ./en/
+      lang: en
+    - name: Français
+      link: ./fr/
+      lang: fr
+    - name: Deutsch
+      link: ./de/
+      lang: de
+    - name: Español
+      link: ./es/
+      lang: es
+    - name: 日本語
+      link: ./jp/
+      lang: jp
+    - name: 简体中文
+      link: ./zh_CN/
+      lang: zh_CN
+    - name: Svenska
+      link: ./sv/
+      lang: sv
+
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/rocky_linux
@@ -84,5 +101,6 @@ extra:
       link: https://git.rockylinux.org
     - icon: material/home
       link: https://rockylinux.org
+
 
 copyright: Copyright &copy; 2021 The Rocky Enterprise Software Foundation
