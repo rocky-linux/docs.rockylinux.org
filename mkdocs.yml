@@ -17,7 +17,7 @@ theme:
     - navigation.top
     - search.suggest
   logo: assets/logo.png
-  favicon: assets/favicon.png
+  favicon: assets/logo.png
   palette:
     - scheme: default
       media: "(prefers-color-scheme: light)"
