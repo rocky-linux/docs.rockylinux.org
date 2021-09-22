@@ -24,7 +24,7 @@
 
 {% block content %}
   {{ super() }}
-  {% if page and page.meta  %}
+  {% if page and page.meta %}
     {% if page.meta.author %}
       <p><small>Author: {{ page.meta.author }}</small></p>
     {% endif %}
