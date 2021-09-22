@@ -21,3 +21,15 @@
   }
 </script>
 {% endblock %}
+
+{% block content %}
+  {{ super() }}
+  {% if page and page.meta %}
+    {% if page.meta.author %}
+      <p><small>Author: {{ page.meta.author }}</small></p>
+    {% endif %}
+    {% if page.meta.contributors %}
+      <p><small>Contributors: {{ page.meta.contributors }}</small></p>
+    {% endif %}
+  {% endif %}
+{% endblock %}
