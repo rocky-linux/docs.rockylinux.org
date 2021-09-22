@@ -64,6 +64,10 @@ plugins:
           jp: 日本語
           zh_CN: 简体中文
           sv: Svenska
+  - redirects:
+      redirect_maps:
+        'guides/add_mirror_manager.md': 'guides/mirror_management/add_mirror_manager.md'
+        'guides/add_mirror_manager': 'guides/mirror_management/add_mirror_manager.md'
 
 extra:
   alternate:
