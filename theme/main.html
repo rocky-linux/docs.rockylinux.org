@@ -5,6 +5,14 @@
 <link rel="stylesheet" href="{{ 'assets/stylesheets/extra.css' | url }}" />
 {% endblock %}
 
+{% block content %}
+  {{ super() }}
+  {% if page and page.meta and page.meta.author %}
+    <p><small>Author: {{ page.meta.author }}</small></p>
+  {% endif %}
+{% endblock %}
+
+
 {% block config %}
 {{ super() }}
 {% if "localsearch" in config["plugins"] %}
