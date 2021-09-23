@@ -4,7 +4,7 @@ site_url: 'https://docs.rockylinux.org'
 docs_dir: 'docs/docs'
 repo_url: https://github.com/rocky-linux/documentation
 repo_name: rocky-linux/documentation
-edit_uri: ''
+edit_uri: 'edit/main/docs/'
 
 theme:
   name: material
