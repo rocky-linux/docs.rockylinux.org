@@ -61,8 +61,8 @@ plugins:
           de: Deutsch
           fr: Français
           es: Español
-          jp: 日本語
-          zh_CN: 简体中文
+          ja: 日本語
+          zh: 简体中文
           sv: Svenska
   - redirects:
       redirect_maps:
