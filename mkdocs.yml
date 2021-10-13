@@ -68,7 +68,6 @@ plugins:
   - redirects:
       redirect_maps:
         'guides/add_mirror_manager.md': 'guides/mirror_management/add_mirror_manager.md'
-        'guides/add_mirror_manager': 'guides/mirror_management/add_mirror_manager.md'
 
 extra:
   alternate:
@@ -88,11 +87,14 @@ extra:
       link: ./es/
       lang: es
     - name: 日本語
-      link: ./jp/
-      lang: jp
+      link: ./ja/
+      lang: ja
+    - name: Português
+      link: ./pt/
+      lang: pt
     - name: 简体中文
-      link: ./zh_CN/
-      lang: zh_CN
+      link: ./zh/
+      lang: zh
     - name: Svenska
       link: ./sv/
       lang: sv
