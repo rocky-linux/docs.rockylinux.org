@@ -61,6 +61,7 @@ plugins:
           de: Deutsch
           fr: Français
           es: Español
+          it: Italian
           ja: 日本語
           zh: 简体中文
           sv: Svenska
@@ -86,6 +87,9 @@ extra:
     - name: Español
       link: ./es/
       lang: es
+    - name: Italian
+      link: ./it/
+      lang: it
     - name: 日本語
       link: ./ja/
       lang: ja
