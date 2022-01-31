@@ -2,5 +2,6 @@ mkdocs
 mkdocs-localsearch
 mkdocs-awesome-pages-plugin
 mkdocs-redirects
+mkdocs-git-revision-date-localized-plugin
 git+https://github.com/ultrabug/mkdocs-static-i18n.git@issue_37
 git+https://github.com/neilhanlon/mkdocs-material.git@fix-sv-translations
