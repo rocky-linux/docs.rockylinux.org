@@ -71,7 +71,7 @@ plugins:
   - redirects:
       redirect_maps:
         'guides/add_mirror_manager.md': 'guides/mirror_management/add_mirror_manager.md'
-  - tags      
+  - tags
 
 extra:
   alternate:
