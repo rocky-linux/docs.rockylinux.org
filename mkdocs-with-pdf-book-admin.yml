@@ -1,0 +1,131 @@
+---
+site_name: 'Documentation'
+site_url: 'https://docs.rockylinux.org'
+docs_dir: 'docs/docs/books'
+repo_url: https://github.com/rocky-linux/documentation
+repo_name: rocky-linux/documentation
+edit_uri: 'edit/main/docs/'
+
+theme:
+  name: material
+  custom_dir: theme
+  font:
+    text: Red Hat Text
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - search.suggest
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  palette:
+    - scheme: default
+      media: "(prefers-color-scheme: light)"
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+      primary: black
+    - scheme: slate
+      media: "(prefers-color-scheme: dark)"
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+      primary: black
+
+markdown_extensions:
+  - abbr
+  - attr_list
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.keys
+  - pymdownx.tabbed
+  - pymdownx.details
+  - pymdownx.tasklist
+  - footnotes
+  - def_list
+  - meta
+
+plugins:
+  # - search
+  - awesome-pages
+  - tags
+  - with-pdf:
+      author: Rocky Documentation Team
+      cover: true
+      cover_logo: ../assets/logo.png
+      back_cover: true
+      cover_title: Learning with Rocky
+      cover_subtitle: A book from the Documentation Team
+      #custom_template_path: TEMPLATES PATH
+      #
+      #toc_title: TOC TITLE TEXT
+      #heading_shift: false
+      toc_level: 2
+      #ordered_chapter_level: 2
+      #excludes_children:
+      #    - 'release-notes/:upgrading'
+      #    - 'release-notes/:changelog'
+      #
+      #exclude_pages:
+      #    - 'bugs/'
+      #    - 'appendix/contribute/'
+      #convert_iframe:
+      #    - src: IFRAME SRC
+      #      img: POSTER IMAGE URL
+      #      text: ALTERNATE TEXT
+      #    - src: ...
+      #two_columns_level: 3
+      #
+      #render_js: true
+      #headless_chrome_path: headless-chromium
+      #
+      output_path: pdf/LearningWithRocky.pdf
+      #enabled_if_env: ENABLE_PDF_EXPORT
+      #
+      #debug_html: true
+      #show_anchors: true
+      #verbose: true
+
+# Page tree
+nav:
+  - index.md
+  - Admin Guide:
+    - admin_guide/00-toc.md
+    - admin_guide/01-presentation.md
+    - admin_guide/03-commands.md
+    - admin_guide/04-advanced-commands.md
+    - admin_guide/05-vi.md
+    - admin_guide/06-users.md
+    - admin_guide/07-file-systems.md
+    - admin_guide/08-process.md
+    - admin_guide/09-backups.md
+    - admin_guide/10-boot.md
+    - admin_guide/11-tasks.md
+    - admin_guide/12-network.md
+    - admin_guide/13-softwares.md
+  - Learning Ansible:
+    - learning_ansible/00-toc.md
+    - learning_ansible/01-basic.md
+    - learning_ansible/02-advanced.md
+    - learning_ansible/03-working-with-files.md
+    - learning_ansible/04-ansible-galaxy.md
+    - learning_ansible/05-deployments.md
+    - learning_ansible/06-large-scale-infrastructure.md
+    - learning_ansible/07-working-with-filters.md
+    - learning_ansible/08-management-server-optimizations.md
+  - Learning Rsync:
+    - learning_rsync/01_rsync_overview.md
+    - learning_rsync/02_rsync_demo01.md
+    - learning_rsync/03_rsync_demo02.md
+    - learning_rsync/04_rsync_configure.md
+    - learning_rsync/05_rsync_authentication-free_login.md
+    - learning_rsync/06_rsync_inotify.md
+    - learning_rsync/07_rsync_unison_use.md
+
+copyright: Copyright &copy; 2021 The Rocky Enterprise Software Foundation
