@@ -66,6 +66,7 @@ plugins:
           zh: 简体中文
           sv: Svenska
           pt: Português
+          ru: Russian
   - git-revision-date-localized:
       type: date
   - redirects:
@@ -105,6 +106,9 @@ extra:
     - name: Svenska
       link: ./sv/
       lang: sv
+    - name: Russian
+      link: ./ru/
+      lang: ru
 
   social:
     - icon: fontawesome/brands/twitter
