@@ -16,6 +16,8 @@ theme:
     - navigation.tabs.sticky
     - navigation.top
     - search.suggest
+    - search.highlight
+    - search.share
   logo: assets/logo.png
   favicon: assets/logo.png
   palette:
