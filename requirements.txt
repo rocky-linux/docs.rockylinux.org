@@ -2,6 +2,8 @@ mkdocs
 mkdocs-awesome-pages-plugin
 mkdocs-git-revision-date-localized-plugin
 mkdocs-localsearch
-mkdocs-material
+# nhanlon(2022-08-25) using my fork of mkdocs-material to get around search issue for the time being
+git+https://github.com/NeilHanlon/mkdocs-material.git@master
 mkdocs-redirects
-git+https://github.com/ultrabug/mkdocs-static-i18n.git@issue_37
+mkdocs-static-i18n
+jieba
