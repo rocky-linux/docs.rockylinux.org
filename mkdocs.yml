@@ -12,7 +12,7 @@ theme:
   font:
     text: Red Hat Text
   icon:
-    edit: material/pencil  
+    edit: material/pencil
   features:
     - content.action.edit
     - navigation.tabs
