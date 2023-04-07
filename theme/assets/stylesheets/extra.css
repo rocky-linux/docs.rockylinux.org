@@ -11,8 +11,8 @@
 
     --md-typeset-a-color: var(--md-accent-fg-color);
 
-  --md-text-font:"Red Hat Text";
-  --md-code-font:"Red Hat Mono"
+    --md-text-font: "Red Hat Text";
+    --md-code-font: "Red Hat Mono";
 }
 
 .md-nav__link.md-nav__link--active {
