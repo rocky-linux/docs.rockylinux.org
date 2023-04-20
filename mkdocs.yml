@@ -74,7 +74,7 @@ plugins:
           sv: Svenska
           pl: Polish
           pt: Português
-          pt-BR: Brazilian
+          pt_BR: Brazilian
           ru: Russian
   - git-revision-date-localized:
       type: date
