@@ -112,7 +112,7 @@ extra:
     - name: Português
       link: ./pt/
     - name: Brazilian
-      link: ./pt-BR/
+      link: ./pt_BR/
       lang: pt
     - name: 简体中文
       link: ./zh/
