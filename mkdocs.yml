@@ -75,7 +75,7 @@ plugins:
           sv: Svenska
           pl: Polish
           pt: Português
-          pt_BR: Brazilian
+          pt-BR: Brazilian
           ru: Russian
   - git-revision-date-localized:
       type: date
@@ -116,7 +116,7 @@ extra:
     - name: Português
       link: ./pt/
     - name: Brazilian
-      link: ./pt_BR/
+      link: ./pt-BR/
       lang: pt
     - name: 简体中文
       link: ./zh/
