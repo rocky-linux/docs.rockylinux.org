@@ -131,7 +131,7 @@ extra:
     - name: Ukrainian
       link: ./uk/
       lang: uk
-      
+
 
   social:
     - icon: fontawesome/brands/twitter
