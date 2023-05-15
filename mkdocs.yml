@@ -77,6 +77,7 @@ plugins:
           pt: Português
           pt-BR: Brazilian
           ru: Russian
+          uk: Ukrainian
   - git-revision-date-localized:
       type: date
   - redirects:
@@ -127,6 +128,10 @@ extra:
     - name: Russian
       link: ./ru/
       lang: ru
+    - name: Ukrainian
+      link: ./uk/
+      lang: uk
+
 
   social:
     - icon: fontawesome/brands/twitter
