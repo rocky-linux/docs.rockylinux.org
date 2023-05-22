@@ -1,10 +1,10 @@
 ---
-site_name: 'Documentation'
-site_url: 'https://docs.rockylinux.org'
-docs_dir: 'docs/docs'
+site_name: "Documentation"
+site_url: "https://docs.rockylinux.org/"
+docs_dir: "docs/docs"
 repo_url: https://github.com/rocky-linux/documentation
 repo_name: rocky-linux/documentation
-edit_uri: 'edit/main/docs/'
+edit_uri: "edit/main/docs/"
 
 theme:
   name: material
@@ -64,25 +64,25 @@ plugins:
   - i18n:
       default_language: en
       languages:
-          en: English
-          de: Deutsch
-          fr: Français
-          es: Español
-          it: Italian
-          ja: 日本語
-          ko: 한국어
-          zh: 简体中文
-          sv: Svenska
-          pl: Polish
-          pt: Português
-          pt-BR: Brazilian
-          ru: Russian
-          uk: Ukrainian
+        en: English
+        de: Deutsch
+        fr: Français
+        es: Español
+        it: Italian
+        ja: 日本語
+        ko: 한국어
+        zh: 简体中文
+        sv: Svenska
+        pl: Polish
+        pt: Português
+        pt-BR: Brazilian
+        ru: Russian
+        uk: Ukrainian
   - git-revision-date-localized:
       type: date
   - redirects:
       redirect_maps:
-        'guides/add_mirror_manager.md': 'guides/mirror_management/add_mirror_manager.md'
+        "guides/add_mirror_manager.md": "guides/mirror_management/add_mirror_manager.md"
   - tags
 
 extra:
@@ -131,7 +131,6 @@ extra:
     - name: Ukrainian
       link: ./uk/
       lang: uk
-
 
   social:
     - icon: fontawesome/brands/twitter
