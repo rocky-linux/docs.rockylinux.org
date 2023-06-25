@@ -65,6 +65,7 @@ plugins:
       default_language: en
       languages:
         en: English
+        af: Afrikaans
         de: Deutsch
         fr: Français
         es: Español
@@ -96,6 +97,9 @@ extra:
     - name: Français
       link: ./fr/
       lang: fr
+    - name: Afrikaans
+      link: ./af/
+      lang: af
     - name: Deutsch
       link: ./de/
       lang: de
