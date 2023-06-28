@@ -66,6 +66,7 @@ plugins:
       languages:
         en: English
         af: Afrikaans
+        cs: Čeština
         de: Deutsch
         fr: Français
         es: Español
@@ -100,6 +101,9 @@ extra:
     - name: Afrikaans
       link: ./af/
       lang: af
+    - name: Čeština
+      link: ./cs/
+      lang: cs
     - name: Deutsch
       link: ./de/
       lang: de
