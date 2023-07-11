@@ -69,6 +69,7 @@ plugins:
         de: Deutsch
         fr: Français
         es: Español
+        id: Bahasa Indonesia
         it: Italian
         ja: 日本語
         ko: 한국어
@@ -106,6 +107,9 @@ extra:
     - name: Español
       link: ./es/
       lang: es
+    - name: Bahasa Indonesia
+      link: ./id/
+      lang: id
     - name: Italian
       link: ./it/
       lang: it
