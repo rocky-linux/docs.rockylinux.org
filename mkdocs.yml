@@ -9,7 +9,7 @@ edit_uri: "edit/main/docs/"
 theme:
   name: material
   custom_dir: theme
-  # NOTE(nhanlon): 2023-04-06 GDPR - cannot self host. this can be removed once the privacy plugin is no-longer subscriber only
+  ## NOTE(nhanlon): 2023-04-06 GDPR - cannot self host. this can be removed once the privacy plugin is no-longer subscriber only
   font: false
   icon:
     edit: material/pencil
