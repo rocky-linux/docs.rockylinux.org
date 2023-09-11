@@ -9,7 +9,7 @@ edit_uri: "edit/main/docs/"
 theme:
   name: material
   custom_dir: theme
-  # NOTE(nhanlon): 2023-04-06 GDPR - cannot self host. this can be removed once the privacy plugin is no-longer subscriber only
+  ## NOTE(nhanlon): 2023-04-06 GDPR - cannot self host. this can be removed once the privacy plugin is no-longer subscriber only
   font: false
   icon:
     edit: material/pencil
@@ -62,24 +62,75 @@ plugins:
   - search
   - awesome-pages
   - i18n:
-      default_language: en
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
       languages:
-        en: English
-        af: Afrikaans
-        de: Deutsch
-        fr: Français
-        es: Español
-        id: Bahasa Indonesia
-        it: Italian
-        ja: 日本語
-        ko: 한국어
-        zh: 简体中文
-        sv: Svenska
-        pl: Polish
-        pt: Português
-        pt-BR: Brazilian
-        ru: Russian
-        uk: Ukrainian
+        - build: true
+          default: true
+          locale: en
+          name: English
+        - build: true
+          default: false
+          locale: af
+          name: Afrikaans
+        - build: true
+          default: false
+          locale: de
+          name: Deutsch
+        - build: true
+          default: false
+          locale: fr
+          name: Français
+        - build: true
+          default: false
+          locale: es
+          name: Español
+        - build: true
+          default: false
+          locale: id
+          name: Bahasa Indonesia
+        - build: true
+          default: false
+          locale: it
+          name: Italian
+        - build: true
+          default: false
+          locale: ja
+          name: 日本語
+        - build: true
+          default: false
+          locale: ko
+          name: 한국어
+        - build: true
+          default: false
+          locale: zh
+          name: 简体中文
+        - build: true
+          default: false
+          locale: sv
+          name: Svenska
+        - build: true
+          default: false
+          locale: pl
+          name: Polish
+        - build: true
+          default: false
+          locale: pt
+          name: Português
+        - build: true
+          default: false
+          locale: pt-BR
+          name: Brazilian
+        - build: true
+          default: false
+          locale: ru
+          name: Russian
+        - build: true
+          default: false
+          locale: uk
+          name: Ukrainian
   - git-revision-date-localized:
       type: date
   - redirects:
@@ -88,58 +139,6 @@ plugins:
   - tags
 
 extra:
-  alternate:
-    - name: Default (en)
-      link: ./
-      lang: en
-    - name: English
-      link: ./en/
-      lang: en
-    - name: Français
-      link: ./fr/
-      lang: fr
-    - name: Afrikaans
-      link: ./af/
-      lang: af
-    - name: Deutsch
-      link: ./de/
-      lang: de
-    - name: Español
-      link: ./es/
-      lang: es
-    - name: Bahasa Indonesia
-      link: ./id/
-      lang: id
-    - name: Italian
-      link: ./it/
-      lang: it
-    - name: 日本語
-      link: ./ja/
-      lang: ja
-    - name: 한국어
-      link: ./ko/
-      lang: ko
-    - name: Polish
-      link: ./pl/
-      lang: pl
-    - name: Português
-      link: ./pt/
-    - name: Brazilian
-      link: ./pt-BR/
-      lang: pt-BR
-    - name: 简体中文
-      link: ./zh/
-      lang: zh
-    - name: Svenska
-      link: ./sv/
-      lang: sv
-    - name: Russian
-      link: ./ru/
-      lang: ru
-    - name: Ukrainian
-      link: ./uk/
-      lang: uk
-
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/rocky_linux
