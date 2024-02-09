@@ -5,6 +5,6 @@
   "scripts": {
     "load-docs": "rm -rf docs; git clone https://github.com/rocky-linux/documentation docs",
     "dev": "mkdocs serve",
-    "build": "mkdocs build -d public"
+    "build": "pip install 'urllib3<2' && mkdocs build -d public"
   }
 }
