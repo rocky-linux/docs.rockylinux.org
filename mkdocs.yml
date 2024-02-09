@@ -67,6 +67,7 @@ markdown_extensions:
 
 plugins:
   - search
+  - social
   - awesome-pages
   - i18n:
       docs_structure: suffix

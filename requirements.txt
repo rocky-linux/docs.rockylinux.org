@@ -5,4 +5,5 @@ mkdocs-localsearch
 mkdocs-material
 mkdocs-redirects
 mkdocs-static-i18n
+mkdocs-material[imaging]
 jieba
