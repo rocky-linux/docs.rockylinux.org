@@ -121,6 +121,10 @@ plugins:
           name: Svenska
         - build: true
           default: false
+          locale: tr
+          name: Türkçe
+        - build: true
+          default: false
           locale: pl
           name: Polish
         - build: true
