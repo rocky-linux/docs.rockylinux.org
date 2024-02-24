@@ -1,6 +1,13 @@
 # Public output
 site/
 public/
+build/
 
 # Docs sources
 docs/
+
+# mkdocs cache
+.cache
+
+# dev envrc
+.envrc.local

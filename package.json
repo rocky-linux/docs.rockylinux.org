@@ -1,10 +1,13 @@
 {
   "name": "@resf/rocky-linux-docs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "load-docs": "rm -rf docs; git clone https://github.com/rocky-linux/documentation docs",
     "dev": "mkdocs serve",
-    "build": "pip install 'urllib3<2' && mkdocs build -d public"
+    "build": "bash setup-deps.sh && bash build-all.sh && bash deploy.sh"
+  },
+  "dependencies": {
+    "pngquant": "^4.2.0"
   }
 }

@@ -1,0 +1,19 @@
+# This file describes a Fastly Compute package. To learn more visit:
+# https://developer.fastly.com/reference/fastly-toml/
+
+authors = [ "neil@resf.org" ]
+description = "Rocky Linux Documentation Site"
+language = "javascript"
+manifest_version = 2
+name = "@resf/rocky-linux-docs"
+service_id = "lACFUzQjUGLnZsvoHgcnx6"
+# kv_store_name = "mkdocs"
+
+[scripts]
+  build = "npm run build"
+
+[local_server]
+  [local_server.backends]
+    [local_server.backends.docs-vercel]
+      url = "https://cname.vercel-dns.com/"
+      override_host = "docs.rockylinux.org"
