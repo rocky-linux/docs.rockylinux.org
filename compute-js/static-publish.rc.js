@@ -14,15 +14,15 @@ const config = {
   // excludeDotFiles: true,
   // includeWellKnown: true,
   // contentAssetInclusionTest: (filename) => true,
-  // contentCompression: [ 'br', 'gzip' ], // For this config value, default is [] if kvStoreName is null.
+  // contentCompression: [ 'br' ], // For this config value, default is [] if kvStoreName is null.
   // moduleAssetInclusionTest: (filename) => false,
   // contentTypes: [
   //   { test: /.custom$/, contentType: 'application/x-custom', text: false },
   // ],
   server: {
     publicDirPrefix: "",
-    staticItems: ["search/search_index.json"],
-    staticDir: "../build/minified/assets",
+    staticItems: ["/search/search_index.json"],
+    staticDir: "../build/minified/site/assets",
     // compression: [ 'br', 'gzip' ],
     spaFile: false,
     notFoundPageFile: "/404.html",
