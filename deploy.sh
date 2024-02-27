@@ -22,6 +22,7 @@ if [[ -z $FASTLY_SERVICE_ID ]]; then
 fi
 
 pushd compute-js || exit $?
+npm install
 $FASTLY compute build || exit $?
 $FASTLY compute deploy -p pkg/resf-rocky-linux-docs.tar.gz
 
