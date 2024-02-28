@@ -23,7 +23,7 @@ const config = {
     publicDirPrefix: "",
     staticItems: ["/search/search_index.json"],
     staticDir: "../build/minified/site/assets",
-    // compression: [ 'br', 'gzip' ],
+    compression: [ 'br', 'gzip' ],
     spaFile: false,
     notFoundPageFile: "/404.html",
     autoExt: [],
