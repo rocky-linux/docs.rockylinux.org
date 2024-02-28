@@ -11,3 +11,5 @@ docs/
 
 # dev envrc
 .envrc.local
+
+node_modules/

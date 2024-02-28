@@ -7,7 +7,7 @@ language = "javascript"
 manifest_version = 2
 name = "@resf/rocky-linux-docs"
 service_id = "lACFUzQjUGLnZsvoHgcnx6"
-# kv_store_name = "mkdocs"
+kv_store_name = "docs.rockylinux.org"
 
 [scripts]
   build = "npm run build"
@@ -17,3 +17,5 @@ service_id = "lACFUzQjUGLnZsvoHgcnx6"
     [local_server.backends.docs-vercel]
       url = "https://cname.vercel-dns.com/"
       override_host = "docs.rockylinux.org"
+  [local_server.kv_stores]
+    [[local_server.kv_stores."docs.rockylinux.org"]]

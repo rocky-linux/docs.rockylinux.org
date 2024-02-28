@@ -5,7 +5,7 @@
   "author": "neil@resf.org",
   "type": "module",
   "devDependencies": {
-    "@fastly/compute-js-static-publish": "^6.0.1"
+    "@fastly/compute-js-static-publish": "^6.0.3"
   },
   "dependencies": {
     "@fastly/js-compute": "^3.0.0"

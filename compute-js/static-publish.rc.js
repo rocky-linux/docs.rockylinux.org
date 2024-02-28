@@ -9,12 +9,12 @@
 const config = {
   rootDir: "../build/minified/site",
   staticContentRootDir: "./static-publisher",
-  // kvStoreName: "mkdocs",
+  kvStoreName: "docs.rockylinux.org",
   // excludeDirs: [ './node_modules' ],
   // excludeDotFiles: true,
   // includeWellKnown: true,
   // contentAssetInclusionTest: (filename) => true,
-  // contentCompression: [ 'br' ], // For this config value, default is [] if kvStoreName is null.
+  contentCompression: [ 'br', 'gzip' ], // For this config value, default is [] if kvStoreName is null.
   // moduleAssetInclusionTest: (filename) => false,
   // contentTypes: [
   //   { test: /.custom$/, contentType: 'application/x-custom', text: false },
