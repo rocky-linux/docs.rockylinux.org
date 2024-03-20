@@ -1,6 +1,6 @@
 {
   "name": "@resf/rocky-linux-docs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Rocky Linux Documentation Site",
   "author": "neil@resf.org",
   "type": "module",

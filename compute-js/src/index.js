@@ -67,6 +67,7 @@ async function handleRequest(event) {
 
 
   // If we **still** can't find the artifact, try to find it on docs.r.o for the user, I guess
+  cacheOverride = cacheOverride.surrogateKey = 'vercel'; // change the surrogate key so we can flush individually if needed
   beresp = await fetch(originalRequest, {backend: backendName, cacheOverride});
 
   if (beresp != null && beresp.status < 400) {
