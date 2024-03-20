@@ -34,6 +34,8 @@ async function handleRequest(event) {
     surrogateKey: 'docs',
     ttl: 21600,
   });
+  let vercelOverride = cacheOverride;
+  vercelOverride.surrogateKey = 'vercel';
 
   // Check if the requested path has a locale slug (e.g., /fr/)
   const localeRegex = /\/(af|de|fr|es|id|it|ja|ko|zh|sv|tr|pl|pt|pt-BR|ru|uk)\//
@@ -47,7 +49,7 @@ async function handleRequest(event) {
     beresp = await staticContentServer.serveRequest(event.request, 'public, max-age=21600, stale-while-revalidate=600');
     if (beresp == null || beresp.status > 400) {
         // doLog("Failed to serve localized page. Attempting to serve page from Vercel");
-        beresp = await fetch(event.request, {backend: backendName, cacheOverride});
+        beresp = await fetch(event.request, {backend: backendName, vercelOverride});
         // doLog("[vercel] " +beresp.url+"|"+beresp.status);
         if (beresp != null && beresp.status < 400) {
           debugLog("Localized content fetched from Vercel");
@@ -67,7 +69,7 @@ async function handleRequest(event) {
 
 
   // If we **still** can't find the artifact, try to find it on docs.r.o for the user, I guess
-  beresp = await fetch(originalRequest, {backend: backendName, cacheOverride});
+  beresp = await fetch(originalRequest, {backend: backendName, vercelOverride});
 
   if (beresp != null && beresp.status < 400) {
     debugLog("content fetched from vercel (fallback)");
