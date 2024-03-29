@@ -1,9 +1,9 @@
 mkdocs
 mkdocs-awesome-pages-plugin
 mkdocs-git-revision-date-localized-plugin
-mkdocs-localsearch
 mkdocs-material
 mkdocs-redirects
 mkdocs-static-i18n
 mkdocs-material[imaging]
+mkdocs-minify-plugin
 jieba

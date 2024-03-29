@@ -9,8 +9,6 @@ edit_uri: "edit/main/docs/"
 theme:
   name: material
   custom_dir: theme
-  ## NOTE(nhanlon): 2023-04-06 GDPR - cannot self host. this can be removed once the privacy plugin is no-longer subscriber only
-  font: false
   icon:
     edit: material/pencil
   features:
@@ -67,13 +65,13 @@ markdown_extensions:
 
 plugins:
   - search
-  - social
   - awesome-pages
   - i18n:
       docs_structure: suffix
       fallback_to_default: true
       reconfigure_material: true
       reconfigure_search: true
+      # build_only_locale: !ENV [BUILD_ONLY_LOCALE]
       languages:
         - build: true
           default: true
@@ -149,7 +147,8 @@ plugins:
       redirect_maps:
         "guides/add_mirror_manager.md": "guides/mirror_management/add_mirror_manager.md"
   - tags
-
+  - privacy
+  - optimize
 extra:
   social:
     - icon: fontawesome/brands/twitter
