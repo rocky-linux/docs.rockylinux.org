@@ -10,10 +10,10 @@ trap cleanup INT
 pip install 'urllib3<2' yq
 pip install -r requirements.txt
 
-# Only install insiders package if it's available
-if [[ -n "$GH_TOKEN" ]]; then
-  pip install "git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git"
-fi
+# Only install insiders package if it's available and we've not asked for it to be skipped
+# if [[ -n "$GH_TOKEN" ]]; then
+#   pip install "git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-material-insiders.git"
+# fi
 
 test -d compute-js/bin || mkdir compute-js/bin
 test -x compute-js/bin/fastly || ( curl -L https://github.com/fastly/cli/releases/download/v10.8.3/fastly_v10.8.3_linux-amd64.tar.gz | tar -xzf /dev/stdin -C compute-js/bin/ )

@@ -148,7 +148,6 @@ plugins:
         "guides/add_mirror_manager.md": "guides/mirror_management/add_mirror_manager.md"
   - tags
   - privacy
-  - optimize
 extra:
   social:
     - icon: fontawesome/brands/twitter
