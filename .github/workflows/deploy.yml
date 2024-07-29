@@ -7,7 +7,7 @@ on:
   push:
     branches:
       - main
-  workflow-dispatch:
+  workflow_dispatch:
   repository_dispatch:
     types: [remote_deploy]
 
