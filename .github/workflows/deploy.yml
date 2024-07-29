@@ -1,0 +1,42 @@
+---
+name: Build and Deploy docs.rockylinux.org
+
+concurrency: production
+
+on:
+  push:
+    branches:
+      - main
+  workflow-dispatch:
+  repository_dispatch:
+    types: [remote_deploy]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/rockylinux/rockylinux:9
+    environment: production
+    steps:
+      - name: Install deps
+        run: dnf -y install python3-pip npm git-core
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: rocky-linux/documentation
+          path: docs
+      - run: python3.9 -m pip install -r requirements.txt
+      - name: Build Site
+        run: npm run build
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-minified
+          path: |
+            build/minified/site
+      - name: Deploy
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+          FASTLY_SERVICE_ID: ${{ secrets.FASTLY_SERVICE_ID }}
+        run: npm run deploy

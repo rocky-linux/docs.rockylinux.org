@@ -21,7 +21,7 @@ MINIFY=$(command -v minify || echo "./compute-js/bin/minify")
 # minify everything
 test -d build/minified || $MINIFY -r --sync --preserve=all -o build/minified build/site
 
-STRIP_NONENGLISH_LOCALES=${STRIP_LOCALES:-true}
+STRIP_NONENGLISH_LOCALES=false
 if ${STRIP_NONENGLISH_LOCALES}; then
   # remove locales from minified (Fastly) site
   for locale in $(yq -r '.plugins[] | select(type == "object" and has("i18n")) | .i18n.languages[].locale' < mkdocs.yml | grep -v 'en'); do

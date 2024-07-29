@@ -16,7 +16,7 @@ pip install -r requirements.txt
 # fi
 
 test -d compute-js/bin || mkdir compute-js/bin
-test -x compute-js/bin/fastly || ( curl -L https://github.com/fastly/cli/releases/download/v10.8.3/fastly_v10.8.3_linux-amd64.tar.gz | tar -xzf /dev/stdin -C compute-js/bin/ )
+test -x compute-js/bin/fastly || ( curl -L https://github.com/fastly/cli/releases/download/v10.12.3/fastly_v10.12.3_linux-amd64.tar.gz | tar -xzf /dev/stdin -C compute-js/bin/ )
 
 # mkdocs optimize plugin requires pngquant
 npm install pngquant
