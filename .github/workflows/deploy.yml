@@ -38,6 +38,8 @@ jobs:
     environment: production
     steps:
 
+      - uses: actions/checkout@v4
+
       - uses: actions/cache/restore@v4
         id: docs-cache
         with:
