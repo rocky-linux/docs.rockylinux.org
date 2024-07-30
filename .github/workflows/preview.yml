@@ -1,15 +1,12 @@
 ---
-name: Build and Deploy docs.rockylinux.org
+name: Fastly Compute Branch Previews
 
-concurrency: production
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}-${{ github.workflow}}
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-  repository_dispatch:
-    types: [remote_deploy]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
   build:
@@ -18,26 +15,33 @@ jobs:
     container:
       image: quay.io/rockylinux/rockylinux:9
       options: --user root
+    environment: preview
     outputs:
       DOCS_SHA: ${{steps.build.outputs.DOCS_SHA}}
-    environment: production
     steps:
+
       - name: Checkout mkdocs config
         uses: actions/checkout@v4
 
       - name: "Build Site"
+        id: build
         uses: ./.github/actions/build-and-cache/
 
       - name: set docs-sha
         id: docs-sha
         run: echo "$DOCS_SHA" >> "$GITHUB_OUTPUT"
-  deploy:
-    name: deploy
+
+  preview:
+    name: preview
     needs: build
     runs-on: ubuntu-latest
-    environment: production
+    environment: preview
+    defaults:
+      run:
+        shell: bash
     steps:
-
+      - uses: actions/checkout@v4
+      - run: ls -la
       - uses: actions/cache/restore@v4
         id: docs-cache
         with:
@@ -45,7 +49,6 @@ jobs:
           key: cache-docs-${{ needs.build.outputs.DOCS_SHA }}
           fail-on-cache-miss: false
           enableCrossOsArchive: true
-
       - name: Retrieve build artifacts
         if: steps.docs-cache.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v4
@@ -53,27 +56,9 @@ jobs:
           name: build-minified
           path: |
             build/minified/site
-
-      - name: Set up Fastly CLI
-        uses: fastly/compute-actions/setup@v6
+      - run: ls -la
+      - uses: neil-forks/compute-actions/preview@preview-with-subdir
         with:
-          cli_version: 'latest'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install Dependencies
-        run: npm install
-        working-directory: ./compute-js
-
-      - name: Build Compute Package
-        uses: fastly/compute-actions/build@v6
-        with:
-          verbose: true
-          project_directory: compute-js
-
-      - name: Deploy Compute Package
-        uses: fastly/compute-actions/deploy@v6
-        with:
-          comment: 'Deployed via GitHub Actions'
-          project_directory: compute-js
-        env:
-          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+          fastly-api-token: ${{ secrets.FASTLY_API_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          project_directory: ./compute-js

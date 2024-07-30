@@ -1,0 +1,62 @@
+name: Build site with mkdocs and cache / save
+description: Builds and deploys docs.r.o with mkdocs and caches build output
+outputs:
+  DOCS_SHA:
+    description: "DOCS_SHA"
+    value: ${{ steps.docs-sha.outputs.DOCS_SHA }}
+runs:
+  using: "composite"
+  steps:
+    - name: Install deps
+      run: dnf -y install python3-pip npm git-core
+      shell: bash
+
+    - name: Checkout documentation repo
+      uses: actions/checkout@v4
+      with:
+        repository: rocky-linux/documentation
+        path: docs
+        fetch-depth: 0
+
+    - name: set docs-sha
+      id: docs-sha
+      working-directory: docs
+      run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - uses: actions/cache/restore@v4
+      id: docs-cache
+      with:
+        path: build/site/minified
+        key: cache-docs-${{ steps.docs-sha.outputs.DOCS_SHA }}
+        lookup-only: true
+
+    - run: python3.9 -m pip install -r requirements.txt
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      shell: bash
+
+    - run: chown -R 1001:1001 .
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      shell: bash
+
+    - name: Build Site
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      run: npm run build
+      shell: bash
+
+    - name: Save built site
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      id: cache-build
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          build/minified/site
+        key: cache-docs-${{ steps.docs-sha.outputs.DOCS_SHA }}
+
+    - name: Archive build artifacts
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-minified
+        path: |
+          build/minified/site
