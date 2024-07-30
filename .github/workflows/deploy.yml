@@ -71,6 +71,8 @@ jobs:
         with:
           verbose: true
           project_directory: compute-js
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
 
       - name: Deploy Compute Package
         uses: fastly/compute-actions/deploy@v6
