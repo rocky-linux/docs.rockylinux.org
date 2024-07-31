@@ -19,7 +19,7 @@ jobs:
       image: quay.io/rockylinux/rockylinux:9
       options: --user root
     outputs:
-      DOCS_SHA: ${{steps.build.outputs.DOCS_SHA}}
+      DOCS_SHA: ${{steps.docs-sha.outputs.DOCS_SHA}}
     environment: production
     steps:
       - name: Checkout mkdocs config
@@ -30,7 +30,7 @@ jobs:
 
       - name: set docs-sha
         id: docs-sha
-        run: echo "$DOCS_SHA" >> "$GITHUB_OUTPUT"
+        run: echo "DOCS_SHA=$DOCS_SHA" >> "$GITHUB_OUTPUT"
   deploy:
     name: deploy
     needs: build
@@ -40,7 +40,13 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - uses: actions/cache/restore@v4
+      # - uses: actions/setup-node@v4
+      - uses: action/setup-node@v4
+        with:
+          node-version: 20
+
+      # needs node
+      - uses: actions/cache@v4
         id: docs-cache
         with:
           path: build/site/minified
@@ -49,7 +55,6 @@ jobs:
           enableCrossOsArchive: true
 
       - name: Retrieve build artifacts
-        if: steps.docs-cache.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v4
         with:
           name: build-minified
@@ -66,13 +71,37 @@ jobs:
         run: npm install
         working-directory: ./compute-js
 
+      - name: restore cached fastly compute package
+        id: restore-fastly-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            pkg/*.tar.gz
+          key: cache-fastly-${{ steps.docs-sha.outputs.DOCS_SHA }}
+
       - name: Build Compute Package
+        if: steps.restore-fastly-cache.outputs.cache-hit != 'true'
         uses: fastly/compute-actions/build@v6
         with:
-          verbose: true
+          verbose: false
           project_directory: compute-js
         env:
           FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+
+      - name: Upload fastly compute package
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-fastly-wasm
+          path: |
+            pkg/*.tar.gz
+
+      - name: cache fastly compute package
+        id: cache-fastly
+        uses: actions/cache@v4
+        with:
+          path: |
+            pkg/*.tar.gz
+          key: cache-fastly-${{ steps.docs-sha.outputs.DOCS_SHA }}
 
       - name: Deploy Compute Package
         uses: fastly/compute-actions/deploy@v6

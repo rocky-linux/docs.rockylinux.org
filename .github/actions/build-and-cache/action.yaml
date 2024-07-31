@@ -24,7 +24,7 @@ runs:
       run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> "$GITHUB_OUTPUT"
       shell: bash
 
-    - uses: actions/cache/restore@v4
+    - uses: actions/cache@v4
       id: docs-cache
       with:
         path: build/site/minified
@@ -47,7 +47,7 @@ runs:
     - name: Save built site
       if: steps.docs-cache.outputs.cache-hit != 'true'
       id: cache-build
-      uses: actions/cache/save@v4
+      uses: actions/cache@v4
       with:
         path: |
           build/minified/site

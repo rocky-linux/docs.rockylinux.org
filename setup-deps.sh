@@ -7,8 +7,8 @@ cleanup() {
 
 trap cleanup INT
 
-pip install 'urllib3<2' yq
-pip install -r requirements.txt
+pip install --user 'urllib3<2' yq
+pip install --user -r requirements.txt
 
 # Only install insiders package if it's available and we've not asked for it to be skipped
 # if [[ -n "$GH_TOKEN" ]]; then
