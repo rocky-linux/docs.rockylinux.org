@@ -9,7 +9,7 @@ on:
       - main
   workflow_dispatch:
   repository_dispatch:
-    types: [remote_deploy]
+    types: [deploy]
 
 jobs:
   build:
