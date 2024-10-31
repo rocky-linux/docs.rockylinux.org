@@ -95,6 +95,10 @@ plugins:
           name: Español
         - build: true
           default: false
+          locale: hi
+          name: हिन्दी
+        - build: true
+          default: false
           locale: id
           name: Bahasa Indonesia
         - build: true
