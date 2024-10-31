@@ -1,7 +1,9 @@
 ---
 name: Build and Deploy docs.rockylinux.org
 
-concurrency: production
+concurrency:
+  group: production
+  cancel-in-progress: true
 
 on:
   push:
