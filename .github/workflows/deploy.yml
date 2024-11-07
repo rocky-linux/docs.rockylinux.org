@@ -120,7 +120,7 @@ jobs:
           TEXT: |
             [Deployment](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) was completed :white_check_mark:
           MATTERMOST_USERNAME: "Github"
-          
+
       - name: Notify documentation channel about deployment Failure
         uses: mattermost/action-mattermost-notify@master
         if: failure() && !cancelled()
