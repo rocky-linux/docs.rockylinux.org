@@ -38,6 +38,7 @@ async function handleRequest(event) {
   vercelOverride.surrogateKey = 'vercel';
 
   // Check if the requested path has a locale slug (e.g., /fr/)
+  // TODO(neil): this should be generated from the config
   const localeRegex = /\/(af|de|fr|es|id|it|ja|ko|zh|sv|tr|pl|pt|pt-BR|ru|uk)\//
   const hasLocaleSlug = localeRegex.test(path);
 
@@ -47,14 +48,8 @@ async function handleRequest(event) {
   if (hasLocaleSlug) {
     debugLog("Attempting to serve localized page for " + path);
     beresp = await staticContentServer.serveRequest(event.request, 'public, max-age=21600, stale-while-revalidate=600');
-    if (beresp == null || beresp.status > 400) {
-        // doLog("Failed to serve localized page. Attempting to serve page from Vercel");
-        beresp = await fetch(event.request, {backend: backendName, vercelOverride});
-        // doLog("[vercel] " +beresp.url+"|"+beresp.status);
-        if (beresp != null && beresp.status < 400) {
-          debugLog("Localized content fetched from Vercel");
-          return beresp;
-        }
+    if (beresp != null && beresp.status < 400) {
+      return beresp;
     }
   }
 
@@ -64,15 +59,6 @@ async function handleRequest(event) {
   beresp = await staticContentServer.serveRequest(bereq, 'public, max-age=21600, stale-while-revalidate=600')
   if (beresp != null && beresp.ok) {
     debugLog("Static content fetched from edge cache");
-    return beresp;
-  }
-
-
-  // If we **still** can't find the artifact, try to find it on docs.r.o for the user, I guess
-  beresp = await fetch(originalRequest, {backend: backendName, vercelOverride});
-
-  if (beresp != null && beresp.status < 400) {
-    debugLog("content fetched from vercel (fallback)");
     return beresp;
   }
 
