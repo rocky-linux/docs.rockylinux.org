@@ -95,14 +95,6 @@ jobs:
           path: |
             pkg/*.tar.gz
 
-      - name: cache fastly compute package
-        id: cache-fastly
-        uses: actions/cache@v4
-        with:
-          path: |
-            pkg/*.tar.gz
-          key: cache-fastly-${{ steps.docs-sha.outputs.DOCS_SHA }}
-
       - name: Deploy Compute Package
         uses: fastly/compute-actions/deploy@v6
         with:
