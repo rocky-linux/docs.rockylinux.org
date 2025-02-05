@@ -62,7 +62,7 @@ jobs:
             build/minified/site
 
       - name: Set up Fastly CLI
-        uses: fastly/compute-actions/setup@v6
+        uses: fastly/compute-actions/setup@v11
         with:
           cli_version: 'latest'
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -81,7 +81,7 @@ jobs:
 
       - name: Build Compute Package
         if: steps.restore-fastly-cache.outputs.cache-hit != 'true'
-        uses: fastly/compute-actions/build@v6
+        uses: fastly/compute-actions/build@v11
         with:
           verbose: false
           project_directory: compute-js
@@ -104,7 +104,7 @@ jobs:
           key: cache-fastly-${{ steps.docs-sha.outputs.DOCS_SHA }}
 
       - name: Deploy Compute Package
-        uses: fastly/compute-actions/deploy@v6
+        uses: fastly/compute-actions/deploy@v11
         with:
           comment: 'Deployed via GitHub Actions'
           project_directory: compute-js
