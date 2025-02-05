@@ -58,7 +58,8 @@ jobs:
             build/minified/site
       - run: ls -la
       - uses: fastly/compute-actions/preview@v11
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
         with:
-          fastly-api-token: ${{ secrets.FASTLY_API_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           project_directory: ./compute-js
