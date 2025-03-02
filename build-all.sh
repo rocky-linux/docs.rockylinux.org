@@ -12,8 +12,8 @@ trap cleanup INT
 source .envrc
 
 # Build the site
-mkdocs build -d build/site
-
+mkdocs build -d build/site || exit $?
+ 
 # hardlink duplicates
 command -v hardlink && hardlink -t build/site || echo "no hardlink in $PATH"
 
