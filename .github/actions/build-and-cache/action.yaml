@@ -8,7 +8,11 @@ runs:
   using: "composite"
   steps:
     - name: Install deps
-      run: dnf -y install python3-pip npm git-core
+      run: dnf -y install python3-pip npm git-core jq
+      shell: bash
+
+    - name: Install yq
+      run: pip install yq
       shell: bash
 
     - name: Checkout documentation repo
