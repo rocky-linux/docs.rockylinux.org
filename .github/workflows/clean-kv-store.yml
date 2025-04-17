@@ -1,0 +1,71 @@
+---
+name: Clean unused KV Store Items
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/rockylinux/rockylinux:9
+      options: --user root
+    outputs:
+      DOCS_SHA: ${{steps.docs-sha.outputs.DOCS_SHA}}
+    environment: production
+    steps:
+      - name: Checkout mkdocs config
+        uses: actions/checkout@v4
+
+      - name: "Build Site"
+        uses: ./.github/actions/build-and-cache/
+
+      - name: set docs-sha
+        id: docs-sha
+        run: echo "DOCS_SHA=$DOCS_SHA" >> "$GITHUB_OUTPUT"
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+
+      - uses: actions/checkout@v4
+
+        with:
+          node-version: 20
+
+      # needs node
+      - uses: actions/cache@v4
+        id: docs-cache
+        with:
+          path: build/site/minified
+          key: cache-docs-${{ needs.build.outputs.DOCS_SHA }}
+          fail-on-cache-miss: false
+          enableCrossOsArchive: true
+
+      - name: Retrieve build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-minified
+          path: |
+            build/minified/site
+
+      - name: Set up Fastly CLI
+        uses: fastly/compute-actions/setup@v11
+        with:
+          cli_version: 'latest'
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./compute-js
+
+      - name: Clean KV Store
+        run: npx @fastly/compute-js-static-publish --clean-kv-store
+        working-directory: ./compute-js
