@@ -13,3 +13,5 @@ docs/
 .envrc.local
 
 node_modules/
+
+archive/
