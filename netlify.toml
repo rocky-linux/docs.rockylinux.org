@@ -1,0 +1,65 @@
+[build]
+  publish = "site"
+  command = "./build-netlify.sh"
+  # command = "pip install -r requirements.txt && git submodule update --init --recursive && mkdocs build"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+# Redirect rules for version management
+[[redirects]]
+  from = "/"
+  to = "/latest/"
+  status = 302
+
+# Fix the symlink issue - redirect latest to actual version 10
+[[redirects]]
+  from = "/latest/*"
+  to = "/10/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/latest"
+  to = "/10/"
+  status = 200
+
+# Direct version access (these should work already)
+[[redirects]]
+  from = "/8/*"
+  to = "/8/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/9/*"
+  to = "/9/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/10/*"
+  to = "/10/:splat"
+  status = 200
+
+# Alias redirects for convenience
+[[redirects]]
+  from = "/rocky8/*"
+  to = "/8/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/rocky9/*"
+  to = "/9/:splat"
+  status = 200
+
+# Headers for better caching
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
