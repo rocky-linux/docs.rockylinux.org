@@ -85,10 +85,6 @@ plugins:
           name: Ukrainian
         - build: true
           default: false
-          locale: af
-          name: Afrikaans
-        - build: true
-          default: false
           locale: de
           name: Deutsch
         - build: true
@@ -99,10 +95,10 @@ plugins:
           default: false
           locale: es
           name: Español
-        - build: true
-          default: false
-          locale: hi
-          name: हिन्दी
+        #- build: true
+        #  default: false
+        #  locale: hi
+        #  name: हिन्दी
         - build: true
           default: false
           locale: id
@@ -127,10 +123,6 @@ plugins:
           default: false
           locale: sv
           name: Svenska
-        - build: true
-          default: false
-          locale: tr
-          name: Türkçe
         - build: true
           default: false
           locale: pl
