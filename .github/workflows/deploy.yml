@@ -121,12 +121,12 @@ jobs:
             [Deployment](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) was completed :white_check_mark:
           MATTERMOST_USERNAME: "Github"
 
-      - name: Notify documentation channel about deployment Failure
-        uses: mattermost/action-mattermost-notify@master
-        if: failure() && !cancelled()
-        with:
-          MATTERMOST_WEBHOOK_URL: ${{ secrets.MM_WEBHOOK_URL }}
-          MATTERMOST_CHANNEL: documentation
-          TEXT: |
-            [Deployment](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) failed :x:
-          MATTERMOST_USERNAME: "Github"
+#      - name: Notify documentation channel about deployment Failure
+#        uses: mattermost/action-mattermost-notify@master
+#        if: failure() && !cancelled()
+#        with:
+#          MATTERMOST_WEBHOOK_URL: ${{ secrets.MM_WEBHOOK_URL }}
+#          MATTERMOST_CHANNEL: documentation
+#          TEXT: |
+#            [Deployment](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) failed :x:
+#          MATTERMOST_USERNAME: "Github"
