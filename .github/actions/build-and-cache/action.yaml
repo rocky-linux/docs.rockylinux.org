@@ -28,39 +28,12 @@ runs:
       run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> "$GITHUB_OUTPUT"
       shell: bash
 
-    # - uses: actions/cache@v4
-    #   id: docs-cache
-    #   with:
-    #     path: build/site/minified
-    #     key: cache-docs-${{ steps.docs-sha.outputs.DOCS_SHA }}
-    #     lookup-only: true
-
     - run: python3.9 -m pip install -r requirements.txt
-      # if: steps.docs-cache.outputs.cache-hit != 'true'
       shell: bash
 
     - run: chown -R 1001:1001 .
-      # if: steps.docs-cache.outputs.cache-hit != 'true'
       shell: bash
 
     - name: Build Site
-      # if: steps.docs-cache.outputs.cache-hit != 'true'
       run: npm run build
       shell: bash
-
-    # - name: Save built site
-    #   if: steps.docs-cache.outputs.cache-hit != 'true'
-    #   id: cache-build
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: |
-    #       build/minified/site
-    #     key: cache-docs-${{ steps.docs-sha.outputs.DOCS_SHA }}
-
-    - name: Archive build artifacts
-      if: steps.docs-cache.outputs.cache-hit != 'true'
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-minified
-        path: |
-          build/minified/site
