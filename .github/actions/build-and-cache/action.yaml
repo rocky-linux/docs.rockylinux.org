@@ -37,3 +37,10 @@ runs:
     - name: Build Site
       run: npm run build
       shell: bash
+
+    - name: Archive build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-minified
+        path: |
+          build/minified/site
