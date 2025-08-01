@@ -113,7 +113,7 @@ jobs:
 
       - name: Notify documentation channel about deployment Success
         uses: mattermost/action-mattermost-notify@master
-        if: success() && !cancelled()
+        if: false
         with:
           MATTERMOST_WEBHOOK_URL: ${{ secrets.MM_WEBHOOK_URL }}
           MATTERMOST_CHANNEL: documentation
