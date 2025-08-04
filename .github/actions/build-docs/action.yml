@@ -1,0 +1,53 @@
+name: Build Documentation
+description: Builds Rocky Linux documentation with caching
+inputs:
+  docs-ref:
+    description: 'Git ref for documentation repo'
+    required: false
+    default: 'main'
+  cache-suffix:
+    description: 'Cache key suffix for isolation'
+    required: false
+    default: 'default'
+outputs:
+  docs-sha:
+    description: 'SHA of documentation repository'
+    value: ${{ steps.docs-sha.outputs.DOCS_SHA }}
+  cache-hit:
+    description: 'Whether build cache was hit'
+    value: ${{ steps.docs-cache.outputs.cache-hit }}
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout documentation repo
+      uses: actions/checkout@v4
+      with:
+        repository: rocky-linux/documentation
+        ref: ${{ inputs.docs-ref }}
+        path: docs
+        fetch-depth: 0
+
+    - name: Set docs SHA
+      id: docs-sha
+      working-directory: docs
+      shell: bash
+      run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Cache mkdocs build
+      uses: actions/cache@v4
+      id: docs-cache
+      with:
+        path: build/minified
+        key: cache-docs-${{ inputs.cache-suffix }}-${{ steps.docs-sha.outputs.DOCS_SHA }}
+        enableCrossOsArchive: true
+
+    - name: Install Python dependencies
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: python3.9 -m pip install -r requirements.txt
+
+    - name: Build Site
+      if: steps.docs-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: npm run build

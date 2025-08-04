@@ -1,65 +1,182 @@
 ---
-name: Fastly Compute Branch Previews
+name: Build and Deploy PR Previews
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}-${{ github.workflow}}
+  group: preview-${{ github.head_ref || github.event.client_payload.pr_number || github.run_id }}
+  cancel-in-progress: true
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
+  repository_dispatch:
+    types: [deploy-preview]
 
 jobs:
-  build:
-    name: build
+  preview:
+    name: Deploy Preview
     runs-on: ubuntu-latest
     container:
-      image: quay.io/rockylinux/rockylinux:9
-      options: --user root
+      image: ghcr.io/rocky-linux/docs-builder:latest
     environment: preview
-    outputs:
-      DOCS_SHA: ${{steps.build.outputs.DOCS_SHA}}
+    if: github.event.action != 'closed'
     steps:
+      - name: Set preview variables
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "PR_NUMBER=${{ github.event.client_payload.pr_number }}" >> $GITHUB_OUTPUT
+            echo "DOCS_REF=${{ github.event.client_payload.docs_ref || 'main' }}" >> $GITHUB_OUTPUT
+            echo "COLLECTION_NAME=pr-${{ github.event.client_payload.pr_number }}" >> $GITHUB_OUTPUT
+            echo "CLEANUP=false" >> $GITHUB_OUTPUT
+          else
+            echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_OUTPUT
+            echo "DOCS_REF=main" >> $GITHUB_OUTPUT
+            echo "COLLECTION_NAME=pr-${{ github.event.number }}" >> $GITHUB_OUTPUT
+            echo "CLEANUP=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Checkout mkdocs config
         uses: actions/checkout@v4
 
-      - name: "Build Site"
-        id: build
-        uses: ./.github/actions/build-and-cache/
+      - name: Checkout documentation repo
+        uses: actions/checkout@v4
+        with:
+          repository: rocky-linux/documentation
+          ref: ${{ steps.vars.outputs.DOCS_REF }}
+          path: docs
+          fetch-depth: 0
 
-      - name: set docs-sha
+      - name: Set docs SHA
         id: docs-sha
-        run: echo "DOCS_SHA=$DOCS_SHA" >> "$GITHUB_OUTPUT"
+        working-directory: docs
+        run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT
 
-  preview:
-    name: preview
-    needs: build
-    runs-on: ubuntu-latest
-    environment: preview
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-      - run: ls -la
-      - uses: actions/cache/restore@v4
+      - name: Cache mkdocs build
+        uses: actions/cache@v4
         id: docs-cache
         with:
-          path: build/site/minified
-          key: cache-docs-${{ needs.build.outputs.DOCS_SHA }}
-          fail-on-cache-miss: false
+          path: build/minified
+          key: cache-docs-preview-${{ steps.docs-sha.outputs.DOCS_SHA }}
           enableCrossOsArchive: true
-      - name: Retrieve build artifacts
+
+      - name: Install Python dependencies
         if: steps.docs-cache.outputs.cache-hit != 'true'
-        uses: actions/download-artifact@v4
+        run: python3.9 -m pip install -r requirements.txt
+
+      - name: Build Site
+        if: steps.docs-cache.outputs.cache-hit != 'true'
+        run: npm run build
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./compute-js
+
+      - name: Cache fastly compute package
+        id: restore-fastly-cache
+        uses: actions/cache@v4
         with:
-          name: build-minified
-          path: |
-            build/minified/site
-      - run: ls -la
-      - uses: fastly/compute-actions/preview@v11
+          path: compute-js/pkg/*.tar.gz
+          key: cache-fastly-preview-${{ steps.docs-sha.outputs.DOCS_SHA }}
+
+      - name: Build Compute Package
+        if: steps.restore-fastly-cache.outputs.cache-hit != 'true'
+        run: npm run build
+        working-directory: ./compute-js
         env:
           FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+
+      - name: Deploy Preview Collection
+        run: |
+          echo "🚀 Deploying preview for PR #${{ steps.vars.outputs.PR_NUMBER }}..."
+          npx @fastly/compute-js-static-publish publish-content \
+            --collection-name=${{ steps.vars.outputs.COLLECTION_NAME }} \
+            --expires-in=7d \
+            --config=./publish-content.config.js
+        working-directory: ./compute-js
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          project_directory: ./compute-js
+          script: |
+            const collection = '${{ steps.vars.outputs.COLLECTION_NAME }}';
+            const body = `🚀 **Preview deployed!**
+            
+            📄 Collection: \`${collection}\`
+            ⏰ Expires: 7 days
+            🔗 Access via your configured preview domain/collection selector
+            
+            _Preview will update automatically on new commits._`;
+            
+            // Find existing preview comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.data.find(c => 
+              c.user.login === 'github-actions[bot]' && c.body.includes('Preview deployed!')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+      - name: Output preview info
+        run: |
+          echo "🚀 Preview deployment completed!"
+          echo "📄 Collection: ${{ steps.vars.outputs.COLLECTION_NAME }}"
+          echo "⏰ Expires: 7 days"
+          echo "🔗 Access via your configured preview domain/collection selector"
+
+  cleanup:
+    name: Cleanup Preview
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rocky-linux/docs-builder:latest
+    environment: preview
+    if: github.event.action == 'closed'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./compute-js
+
+      - name: Delete Preview Collection
+        run: |
+          echo "🧹 Cleaning up preview for PR #${{ github.event.number }}..."
+          npx @fastly/compute-js-static-publish collections delete \
+            --collection-name=pr-${{ github.event.number }} || true
+        working-directory: ./compute-js
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+
+      - name: Comment cleanup on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🧹 **Preview cleaned up**
+              
+              Collection \`pr-${{ github.event.number }}\` has been deleted.`
+            });

@@ -10,6 +10,7 @@
     "deploy": "bash deploy.sh"
   },
   "dependencies": {
+    "fastly": "^12.1.0",
     "pngquant": "^4.2.0"
   }
 }

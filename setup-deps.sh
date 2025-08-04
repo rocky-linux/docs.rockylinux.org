@@ -7,6 +7,13 @@ cleanup() {
 
 trap cleanup INT
 
+if [[ $EUID -ne 0 ]]; then
+   echo "please run as root"
+   exit 2
+fi
+
+dnf -y install /usr/bin/pip /usr/bin/npm /usr/bin/curl /usr/bin/jq git-core
+
 pip install --user 'urllib3<2' yq
 pip install --user -r requirements.txt
 

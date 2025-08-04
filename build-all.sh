@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH="/root/.local/bin:$PATH"
+
 test -d build || mkdir build
 
 cleanup() {

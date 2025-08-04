@@ -1,0 +1,86 @@
+---
+name: Build Monthly Dependencies Container
+
+on:
+  schedule:
+    # Run on the 1st of every month at 2 AM UTC
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: rocky-linux/docs-builder
+
+jobs:
+  build-container:
+    name: Build Dependencies Container
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=schedule,pattern={{date 'YYYY-MM'}}
+            type=raw,value=latest
+
+      - name: Create Dockerfile
+        run: |
+          cat > Dockerfile << 'EOF'
+          FROM quay.io/rockylinux/rockylinux:9
+
+          # Copy setup script and requirements
+          COPY setup-deps.sh /tmp/setup-deps.sh
+          COPY requirements.txt /tmp/requirements.txt
+
+          # Install dependencies
+          RUN chmod +x /tmp/setup-deps.sh && \
+              /tmp/setup-deps.sh && \
+              python3.9 -m pip install -r /tmp/requirements.txt && \
+              rm /tmp/setup-deps.sh /tmp/requirements.txt
+
+          # Set working directory
+          WORKDIR /workspace
+
+          # Set user permissions for GitHub Actions
+          RUN useradd -m -u 1001 runner && \
+              chown -R runner:runner /workspace
+          EOF
+
+      - name: Build and push container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Clean up old images
+        run: |
+          # Keep only the latest 3 monthly images
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /orgs/rocky-linux/packages/container/docs-builder/versions \
+            --jq '.[3:] | .[] | select(.metadata.container.tags | length == 1) | .id' \
+            | xargs -I {} gh api \
+              -X DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /orgs/rocky-linux/packages/container/docs-builder/versions/{} || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
