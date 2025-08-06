@@ -15,8 +15,8 @@ fi
 dnf -y module switch-to nodejs:22
 dnf -y install /usr/bin/pip npm /usr/bin/curl /usr/bin/jq git-core
 
-pip install --user 'urllib3<2' yq
-pip install --user -r requirements.txt
+pip install 'urllib3<2' yq
+pip install -r requirements.txt
 
 # Only install insiders package if it's available and we've not asked for it to be skipped
 # if [[ -n "$GH_TOKEN" ]]; then
@@ -24,7 +24,7 @@ pip install --user -r requirements.txt
 # fi
 
 # mkdocs optimize plugin requires pngquant
-npm install pngquant
+npm install -g pngquant
 
 # minify for reducing deployment size
 mkdir -p compute-js/bin
