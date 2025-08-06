@@ -73,75 +73,75 @@ plugins:
       reconfigure_search: true
       # build_only_locale: !ENV [BUILD_ONLY_LOCALE]
       languages:
-        - build: true
+        - build: !ENV [BUILD_EN, true]
           default: true
           locale: en
           name: English
-        - build: true
+        - build: !ENV [BUILD_AF, false]
           default: false
           locale: af
           name: Afrikaans
-        - build: true
+        - build: !ENV [BUILD_DE, false]
           default: false
           locale: de
           name: Deutsch
-        - build: true
+        - build: !ENV [BUILD_FR, false]
           default: false
           locale: fr
           name: Français
-        - build: true
+        - build: !ENV [BUILD_ES, false]
           default: false
           locale: es
           name: Español
-        - build: true
+        - build: !ENV [BUILD_HI, false]
           default: false
           locale: hi
           name: हिन्दी
-        - build: true
+        - build: !ENV [BUILD_ID, false]
           default: false
           locale: id
           name: Bahasa Indonesia
-        - build: true
+        - build: !ENV [BUILD_IT, false]
           default: false
           locale: it
           name: Italian
-        - build: true
+        - build: !ENV [BUILD_JA, false]
           default: false
           locale: ja
           name: 日本語
-        - build: true
+        - build: !ENV [BUILD_KO, false]
           default: false
           locale: ko
           name: 한국어
-        - build: true
+        - build: !ENV [BUILD_ZH, false]
           default: false
           locale: zh
           name: 简体中文
-        - build: true
+        - build: !ENV [BUILD_SV, false]
           default: false
           locale: sv
           name: Svenska
-        - build: true
+        - build: !ENV [BUILD_TR, false]
           default: false
           locale: tr
           name: Türkçe
-        - build: true
+        - build: !ENV [BUILD_PL, false]
           default: false
           locale: pl
           name: Polish
-        - build: true
+        - build: !ENV [BUILD_PT, false]
           default: false
           locale: pt
           name: Português
-        - build: true
+        - build: !ENV [BUILD_PT_BR, false]
           default: false
           locale: pt-BR
           name: Brazilian
-        - build: true
+        - build: !ENV [BUILD_RU, false]
           default: false
           locale: ru
           name: Russian
-        - build: true
+        - build: !ENV [BUILD_UK, false]
           default: false
           locale: uk
           name: Ukrainian

@@ -1,0 +1,345 @@
+---
+name: Multi-Language Matrix Build
+
+concurrency:
+  group: laboratory
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+    inputs:
+      docs-ref:
+        description: 'Documentation repository ref to build'
+        required: false
+        default: 'main'
+      languages:
+        description: 'Comma-separated list of languages to build (empty = all enabled)'
+        required: false
+        default: ''
+      test_mode:
+        description: 'Test mode - skip deployment steps'
+        type: boolean
+        required: false
+        default: true
+
+# env: 
+  # Language control flags - dynamically loaded from repository variables
+  # Set vars.BUILD_<LANG>=false to disable specific languages
+  # Languages are auto-detected from mkdocs.yml
+
+jobs:
+  prepare:
+    name: Prepare Build Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+      docs-sha: ${{ steps.docs-info.outputs.docs-sha }}
+      all-languages: ${{ steps.extract-languages.outputs.all-languages }}
+    steps:
+      - name: Checkout mkdocs config
+        uses: actions/checkout@v4
+
+      - name: Extract all languages from mkdocs.yml
+        id: extract-languages
+        run: |
+          # Extract all available languages from mkdocs.yml (run once)
+          ALL_LANGUAGES=$(yq -r '.plugins[] | select(type == "object" and has("i18n")) | .i18n.languages[].locale' < mkdocs.yml | jq -R . | jq -s .)
+          echo "all-languages=$ALL_LANGUAGES" >> $GITHUB_OUTPUT
+          echo "Available languages from mkdocs.yml: $ALL_LANGUAGES"
+
+      - name: Get documentation SHA
+        id: docs-info
+        run: |
+          # Get the SHA of the documentation repo at the specified ref
+          DOCS_SHA=$(git ls-remote https://github.com/rocky-linux/documentation.git ${{ inputs.docs-ref || 'main' }} | cut -f1)
+          echo "docs-sha=$DOCS_SHA" >> $GITHUB_OUTPUT
+
+      - name: Generate build matrix
+        id: matrix
+        run: |
+          # Use pre-extracted languages
+          ALL_LANGUAGES='${{ steps.extract-languages.outputs.all-languages }}'
+          echo "Using extracted languages: $ALL_LANGUAGES"
+          
+          # Check if specific languages were requested
+          REQUESTED_LANGUAGES="${{ inputs.languages }}"
+          
+          if [ -n "$REQUESTED_LANGUAGES" ]; then
+            # Convert comma-separated input to JSON array
+            MATRIX_LANGUAGES=$(echo "$REQUESTED_LANGUAGES" | sed 's/,/","/g' | sed 's/^/["/' | sed 's/$/"]/')
+            echo "Using requested languages: $MATRIX_LANGUAGES"
+          else
+            # Filter languages based on environment variables
+            ENABLED_LANGUAGES='['
+            
+            # Create a JSON object of all repository variables for dynamic lookup
+            VARS_JSON='${{ toJson(vars) }}'
+            echo "Repository variables: $VARS_JSON"
+            
+            # Dynamically check each language from mkdocs.yml
+            for locale in $(echo "$ALL_LANGUAGES" | jq -r '.[]'); do
+              # Convert locale to environment variable name (e.g., pt-BR -> BUILD_PT_BR)
+              env_var="BUILD_$(echo "$locale" | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
+              
+              # Check if the repository variable is set to 'false', otherwise default to 'true'
+              env_value=$(echo "$VARS_JSON" | jq -r --arg key "$env_var" '.[$key] // "true"')
+              
+              if [ "$env_value" != "false" ]; then
+                ENABLED_LANGUAGES+="\"$locale\","
+                echo "Including language: $locale (${env_var}=${env_value})"
+              else
+                echo "Excluding language: $locale (${env_var}=false)"
+              fi
+            done
+            
+            # Remove trailing comma and close array
+            ENABLED_LANGUAGES=$(echo "$ENABLED_LANGUAGES" | sed 's/,$//')']'
+            
+            MATRIX_LANGUAGES="$ENABLED_LANGUAGES"
+          fi
+          
+          # Ensure English is always included (required for fallbacks)
+          if ! echo "$MATRIX_LANGUAGES" | grep -q '"en"'; then
+            MATRIX_LANGUAGES=$(echo "$MATRIX_LANGUAGES" | sed 's/\[/["en",/')
+            echo "Added English as fallback language"
+          fi
+          
+          # Remove English from the matrix since it has its own dedicated job
+          MATRIX_LANGUAGES_NO_EN=$(echo "$MATRIX_LANGUAGES" | jq 'map(select(. != "en"))')
+          
+          # Create final matrix for language builds (excluding English)
+          MATRIX=$(echo "{\"language\": $MATRIX_LANGUAGES_NO_EN}" | jq -c .)
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          
+          echo "Final generated matrix (excluding English): $MATRIX"
+
+  build-english:
+    name: Build English (Fallback Base)
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rocky-linux/docs-builder:latest
+    needs: prepare
+    if: contains(fromJson(needs.prepare.outputs.matrix).language, 'en')
+    outputs:
+      cache-key: ${{ steps.build.outputs.cache-key }}
+    steps:
+      - name: Checkout mkdocs config
+        uses: actions/checkout@v4
+
+      - name: Remove language-specific files for English build
+        run: |
+          # Use pre-extracted languages and filter out English
+          ALL_LANGUAGES='${{ needs.prepare.outputs.all-languages }}'
+          locales=$(echo "$ALL_LANGUAGES" | jq -r '.[] | select(. != "en")' | jq -R . | jq -s .)
+          echo "Non-English locales: $locales"
+          
+          # Convert JSON array to bash array and remove language-specific files
+          for locale in $(echo "$locales" | jq -r '.[]'); do
+            echo "Removing files for locale: $locale"
+            find docs/docs -name "*.$locale.md" -type f -delete
+            find docs/docs -name "*.$locale.yml" -type f -delete
+            find docs/docs -name "*.$locale.yaml" -type f -delete
+            # Also handle directories with locale suffixes if they exist
+            find docs/docs -type d -name "*.$locale" -exec rm -rf {} + 2>/dev/null || true
+          done
+          
+          echo "Remaining files after cleanup:"
+          find docs/docs -name "*.md" | head -20
+
+      - name: Set all languages environment variables for English build
+        run: |
+          # Use pre-extracted languages
+          ALL_LANGUAGES='${{ needs.prepare.outputs.all-languages }}'
+          
+          echo "Setting all languages to true for English build (full structure):"
+          
+          # Enable all languages for complete site structure
+          for locale in $(echo "$ALL_LANGUAGES" | jq -r '.[]'); do
+            env_var="BUILD_$(echo "$locale" | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
+            echo "${env_var}=true" >> $GITHUB_ENV
+            echo "${env_var}=true"
+          done
+
+      - name: Build English Documentation (full structure, no lang files)
+        id: build
+        uses: ./.github/actions/build-docs
+        with:
+          docs-ref: ${{ inputs.docs-ref || 'main' }}
+          cache-suffix: 'en-base'
+
+      - name: Set cache key output
+        run: echo "cache-key=cache-docs-en-base-${{ needs.prepare.outputs.docs-sha }}" >> $GITHUB_OUTPUT
+
+      - name: Archive English build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-en-base
+          path: build/minified
+
+  build-languages:
+    name: Build ${{ matrix.language }}
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rocky-linux/docs-builder:latest
+    needs: [prepare, build-english]
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
+      max-parallel: 6
+    steps:
+      - name: Skip if English (safety check)
+        if: matrix.language == 'en'
+        run: |
+          echo "Skipping English build - handled by dedicated English job"
+          exit 0
+
+      - name: Checkout mkdocs config
+        uses: actions/checkout@v4
+
+      - name: Restore English base cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.workspace }}/build/minified
+          key: ${{ needs.build-english.outputs.cache-key }}
+          enableCrossOsArchive: true
+
+      - name: Download English base build
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-en-base
+          path: build/minified-en-base
+
+      - name: Set language environment variables
+        id: lang-env
+        run: |
+          # Use pre-extracted languages
+          ALL_LANGUAGES='${{ needs.prepare.outputs.all-languages }}'
+          
+          # Set environment variables for this build
+          echo "Setting environment variables for ${{ matrix.language }} build:"
+          
+          # Always enable English
+          echo "BUILD_EN=true" >> $GITHUB_ENV
+          echo "BUILD_EN=true"
+          
+          # Set all other languages to false, except the target language
+          for locale in $(echo "$ALL_LANGUAGES" | jq -r '.[]'); do
+            if [ "$locale" != "en" ]; then
+              env_var="BUILD_$(echo "$locale" | tr '[:lower:]' '[:upper:]' | tr '-' '_')"
+              if [ "$locale" = "${{ matrix.language }}" ]; then
+                echo "${env_var}=true" >> $GITHUB_ENV
+                echo "${env_var}=true"
+              else
+                echo "${env_var}=false" >> $GITHUB_ENV
+                echo "${env_var}=false"
+              fi
+            fi
+          done
+
+      - name: Build ${{ matrix.language }} Documentation (with English fallback)
+        uses: ./.github/actions/build-docs
+        with:
+          docs-ref: ${{ inputs.docs-ref || 'main' }}
+          cache-suffix: ${{ matrix.language }}
+
+      - name: Archive ${{ matrix.language }} build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.language }}
+          path: build/minified
+
+  summary:
+    name: Build Summary
+    runs-on: ubuntu-latest
+    needs: [prepare, build-english, build-languages]
+    if: always()
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-builds
+
+      - name: Generate summary
+        run: |
+          echo "# Laboratory Multi-Language Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Build Configuration" >> $GITHUB_STEP_SUMMARY
+          echo "- **Documentation Ref**: ${{ inputs.docs-ref || 'main' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Documentation SHA**: ${{ needs.prepare.outputs.docs-sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Mode**: ${{ inputs.test_mode }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Language Matrix" >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo '${{ needs.prepare.outputs.matrix }}' | jq . >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Build Artifacts" >> $GITHUB_STEP_SUMMARY
+          for dir in all-builds/*/; do
+            if [ -d "$dir" ]; then
+              artifact_name=$(basename "$dir")
+              file_count=$(find "$dir" -type f | wc -l)
+              total_size=$(du -sh "$dir" | cut -f1)
+              echo "- **$artifact_name**: $file_count files, $total_size" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Job Status" >> $GITHUB_STEP_SUMMARY
+          echo "- **English Build**: ${{ needs.build-english.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Language Builds**: ${{ needs.build-languages.result }}" >> $GITHUB_STEP_SUMMARY
+
+  # Optional deployment step (disabled in test mode)
+  deploy-test:
+    name: Deploy Test Collections
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rocky-linux/docs-builder:latest
+    needs: [prepare, build-english, build-languages]
+    if: inputs.test_mode != true && success()
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
+      max-parallel: 3
+    environment: laboratory
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Download ${{ matrix.language }} build
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ matrix.language == 'en' && 'en-base' || matrix.language }}
+          path: build/minified
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: ./compute-js
+
+      - name: Build Compute Package for ${{ matrix.language }}
+        run: npm run build
+        working-directory: ./compute-js
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+
+      - name: Deploy ${{ matrix.language }} to Lab Collection
+        run: |
+          npx @fastly/compute-js-static-publish publish-content \
+            --collection-name=lab-${{ matrix.language }} \
+            --expires-in=24h
+        working-directory: ./compute-js
+        env:
+          FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
+
+      - name: Output deployment info
+        run: |
+          echo ">� Laboratory deployment completed for ${{ matrix.language }}!"
+          echo "=� Collection: lab-${{ matrix.language }}"
+          echo "� Expires: 24 hours"
