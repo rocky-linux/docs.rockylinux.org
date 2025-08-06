@@ -185,7 +185,7 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
       fail-fast: false
-      max-parallel: 6
+      max-parallel: 7
     steps:
       - name: Skip if English (safety check)
         if: matrix.language == 'en'
