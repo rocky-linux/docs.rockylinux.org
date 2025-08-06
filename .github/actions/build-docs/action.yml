@@ -38,14 +38,9 @@ runs:
       uses: actions/cache@v4
       id: docs-cache
       with:
-        path: build/minified
+        path: ${{ github.workspace }}/build/minified
         key: cache-docs-${{ inputs.cache-suffix }}-${{ steps.docs-sha.outputs.DOCS_SHA }}
         enableCrossOsArchive: true
-
-    - name: Install Python dependencies
-      if: steps.docs-cache.outputs.cache-hit != 'true'
-      shell: bash
-      run: python3.9 -m pip install -r requirements.txt
 
     - name: Build Site
       if: steps.docs-cache.outputs.cache-hit != 'true'

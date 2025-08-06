@@ -20,40 +20,20 @@ jobs:
     container:
       image: ghcr.io/rocky-linux/docs-builder:latest
     outputs:
-      DOCS_SHA: ${{ steps.docs-sha.outputs.DOCS_SHA }}
+      DOCS_SHA: ${{ steps.build-docs.outputs.docs-sha }}
     environment: staging
     steps:
       - name: Checkout mkdocs config
         uses: actions/checkout@v4
 
-      - name: Checkout documentation repo
-        uses: actions/checkout@v4
-        with:
-          repository: rocky-linux/documentation
-          path: docs
-          fetch-depth: 0
-
-      - name: Set docs SHA
-        id: docs-sha
-        working-directory: docs
-        run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache mkdocs build
-        uses: actions/cache@v4
-        id: docs-cache
-        with:
-          path: build/minified
-          key: cache-docs-staging-${{ steps.docs-sha.outputs.DOCS_SHA }}
-          enableCrossOsArchive: true
-
-      - name: Build Site
-        if: steps.docs-cache.outputs.cache-hit != 'true'
-        run: npm run build
+      - name: Build Documentation
+        id: build-docs
+        uses: ./.github/actions/build-docs
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-minified-staging
+          name: build-minified
           path: build/minified
 
   deploy:
@@ -76,8 +56,8 @@ jobs:
         uses: actions/cache/restore@v4
         id: docs-cache
         with:
-          path: build/minified
-          key: cache-docs-staging-${{ needs.build.outputs.DOCS_SHA }}
+          path: ${{ github.workspace }}/build/minified
+          key: cache-docs-default-${{ needs.build.outputs.DOCS_SHA }}
           fail-on-cache-miss: false
           enableCrossOsArchive: true
 
@@ -85,7 +65,7 @@ jobs:
         if: steps.docs-cache.outputs.cache-hit != 'true'
         uses: actions/download-artifact@v4
         with:
-          name: build-minified-staging
+          name: build-minified
           path: build/minified
 
       - name: Install Dependencies
@@ -96,7 +76,7 @@ jobs:
         id: restore-fastly-cache
         uses: actions/cache@v4
         with:
-          path: compute-js/pkg/*.tar.gz
+          path: ${{ github.workspace }}/compute-js/pkg/*.tar.gz
           key: cache-fastly-staging-${{ needs.build.outputs.DOCS_SHA }}
 
       - name: Build Compute Package
@@ -108,20 +88,21 @@ jobs:
 
       - name: Publish to Staging Collection
         run: |
-          npx @fastly/compute-js-static-publish publish-content \
-            --collection-name=staging \
-            --expires-in=7d \
-            --config=./publish-content.config.js
+          npx @fastly/compute-js-static-publish publish-content
+            # --collection-name=staging \
+            # --expires-in=7d \
+            # --config=./publish-content.config.js
         working-directory: ./compute-js
         env:
           FASTLY_API_TOKEN: ${{ secrets.FASTLY_API_TOKEN }}
 
       - name: Output staging info
         run: |
-          echo "🚀 Staging deployment completed!"
-          echo "📄 Collection: staging"
-          echo "⏰ Expires: 7 days"
-          echo "🔗 Access via your configured staging domain/collection selector"
+          echo "🚀 Deployment completed!"
+          # echo "🚀 Staging deployment completed!"
+          # echo "📄 Collection: staging"
+          # echo "⏰ Expires: 7 days"
+          # echo "🔗 Access via your configured staging domain/collection selector"
 
   auto-promote:
     name: Auto-promote to Production
@@ -137,9 +118,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Install Dependencies
         run: npm install
         working-directory: ./compute-js
+
+      - name: Restore Fastly compute package cache
+        id: restore-fastly-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/compute-js/pkg/*.tar.gz
+          key: cache-fastly-staging-${{ needs.build.outputs.DOCS_SHA }}
 
       - name: Auto-promote staging to production
         run: |

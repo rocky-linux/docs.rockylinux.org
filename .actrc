@@ -1,0 +1,4 @@
+--env ACTIONS_RUNTIME_URL=http://artifacts.docker.internal:8080/
+--env ACTIONS_RUNTIME_TOKEN=foo
+--env ACTIONS_CACHE_URL=http://artifacts.docker.internal:8080/
+--artifact-server-path ../cache/

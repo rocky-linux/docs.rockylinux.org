@@ -38,34 +38,12 @@ jobs:
       - name: Checkout mkdocs config
         uses: actions/checkout@v4
 
-      - name: Checkout documentation repo
-        uses: actions/checkout@v4
+      - name: Build Documentation
+        id: build-docs
+        uses: ./.github/actions/build-docs
         with:
-          repository: rocky-linux/documentation
-          ref: ${{ steps.vars.outputs.DOCS_REF }}
-          path: docs
-          fetch-depth: 0
-
-      - name: Set docs SHA
-        id: docs-sha
-        working-directory: docs
-        run: echo "DOCS_SHA=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Cache mkdocs build
-        uses: actions/cache@v4
-        id: docs-cache
-        with:
-          path: build/minified
-          key: cache-docs-preview-${{ steps.docs-sha.outputs.DOCS_SHA }}
-          enableCrossOsArchive: true
-
-      - name: Install Python dependencies
-        if: steps.docs-cache.outputs.cache-hit != 'true'
-        run: python3.9 -m pip install -r requirements.txt
-
-      - name: Build Site
-        if: steps.docs-cache.outputs.cache-hit != 'true'
-        run: npm run build
+          docs-ref: ${{ steps.vars.outputs.DOCS_REF }}
+          cache-suffix: preview
 
       - name: Install Dependencies
         run: npm install
@@ -76,7 +54,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: compute-js/pkg/*.tar.gz
-          key: cache-fastly-preview-${{ steps.docs-sha.outputs.DOCS_SHA }}
+          key: cache-fastly-preview-${{ steps.build-docs.outputs.docs-sha }}
 
       - name: Build Compute Package
         if: steps.restore-fastly-cache.outputs.cache-hit != 'true'

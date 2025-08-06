@@ -29,29 +29,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=schedule,pattern={{date 'YYYY-MM'}}
-            type=raw,value=latest
-
       - name: Create Dockerfile
         run: |
           cat > Dockerfile << 'EOF'
           FROM quay.io/rockylinux/rockylinux:9
 
-          # Copy setup script and requirements
+          # Copy setup script
           COPY setup-deps.sh /tmp/setup-deps.sh
-          COPY requirements.txt /tmp/requirements.txt
+          COPY requirements.txt .
 
           # Install dependencies
           RUN chmod +x /tmp/setup-deps.sh && \
               /tmp/setup-deps.sh && \
-              python3.9 -m pip install -r /tmp/requirements.txt && \
-              rm /tmp/setup-deps.sh /tmp/requirements.txt
+              rm /tmp/setup-deps.sh
 
           # Set working directory
           WORKDIR /workspace
@@ -66,8 +56,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Clean up old images
         run: |
