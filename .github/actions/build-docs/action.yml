@@ -45,4 +45,4 @@ runs:
     - name: Build Site
       if: steps.docs-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: npm run build
+      run: ./build-all.sh
