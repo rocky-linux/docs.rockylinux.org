@@ -27,5 +27,5 @@ pip install -r requirements.txt
 npm install -g pngquant
 
 # minify for reducing deployment size
-mkdir -p compute-js/bin
-test -x compute-js/bin/minify || (curl -L https://github.com/tdewolff/minify/releases/download/v2.20.18/minify_linux_amd64.tar.gz | tar -C compute-js/bin/ -xz minify)
+mkdir -p /root/.local/bin
+test -x /root/.local/bin/minify || (curl -L https://github.com/tdewolff/minify/releases/download/v2.20.18/minify_linux_amd64.tar.gz | tar -C /root/.local/bin/ -xz minify)
