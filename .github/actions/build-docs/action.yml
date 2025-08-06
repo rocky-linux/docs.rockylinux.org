@@ -9,6 +9,10 @@ inputs:
     description: 'Cache key suffix for isolation'
     required: false
     default: 'default'
+  skip-checkout:
+    description: 'Skip documentation repo checkout (docs already present)'
+    required: false
+    default: 'false'
 outputs:
   docs-sha:
     description: 'SHA of documentation repository'
@@ -21,6 +25,7 @@ runs:
   using: composite
   steps:
     - name: Checkout documentation repo
+      if: inputs.skip-checkout != 'true'
       uses: actions/checkout@v4
       with:
         repository: rocky-linux/documentation
