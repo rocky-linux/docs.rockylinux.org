@@ -14,7 +14,7 @@ which mike
 
 # Ensure submodules are initialized and updated
 echo "Initializing and updating Git submodules..."
-git submodule update --init --recursive
+git submodule update --init
 
 echo "--- Submodule Debugging Info ---"
 ls -la versions/rocky-8
