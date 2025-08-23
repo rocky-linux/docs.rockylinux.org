@@ -62,7 +62,7 @@ build_version() {
     local temp_mkdocs_yml="mkdocs.yml.${version}.tmp"
     
     # Read the main mkdocs.yml, replace docs_dir, and write to temp file
-    sed "s|^docs_dir: .*|docs_dir: $submodule_path/docs|" mkdocs.yml > "$temp_mkdocs_yml"
+    sed "s|^docs_dir: .*|docs_dir: $submodule_path/docs|" superfast_build/mkdocs.yml > "$temp_mkdocs_yml"
     
     # Deploy with mike, using the temporary mkdocs.yml
     mike deploy "$version" --config-file "$temp_mkdocs_yml"
