@@ -14,13 +14,9 @@ which mike
 
 # Ensure submodules are initialized and updated
 echo "Initializing and updating Git submodules..."
-git submodule update --init
-
-echo "--- Submodule Debugging Info ---"
-ls -la versions/rocky-8
-git status --porcelain
-git submodule status
-echo "--- End Submodule Debugging Info ---"
+git clone --branch rocky-8 https://github.com/rocky-linux/documentation versions/rocky-8
+git clone --branch rocky-9 https://github.com/rocky-linux/documentation versions/rocky-9
+git clone --branch main https://github.com/rocky-linux/documentation versions/main
 
 
 # FORCE cleanup of any existing build artifacts (not .git related)
