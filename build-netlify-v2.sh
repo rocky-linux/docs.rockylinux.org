@@ -14,9 +14,26 @@ which mike
 
 # Ensure submodules are initialized and updated
 echo "Initializing and updating Git submodules..."
-git clone --branch rocky-8 https://github.com/rocky-linux/documentation versions/rocky-8
-git clone --branch rocky-9 https://github.com/rocky-linux/documentation versions/rocky-9
-git clone --branch main https://github.com/rocky-linux/documentation versions/main
+
+# Function to clone or update a submodule
+clone_or_update_submodule() {
+    local branch=$1
+    local path=$2
+    local url=$3
+
+    if [ -d "$path" ]; then
+        echo "Submodule $path already exists. Updating..."
+        (cd "$path" && git pull origin "$branch")
+    else
+        echo "Cloning submodule $path..."
+        git clone --branch "$branch" "$url" "$path"
+    fi
+}
+
+clone_or_update_submodule "rocky-8" "versions/rocky-8" "https://github.com/rocky-linux/documentation"
+clone_or_update_submodule "rocky-9" "versions/rocky-9" "https://github.com/rocky-linux/documentation"
+clone_or_update_submodule "main" "versions/main" "https://github.com/rocky-linux/documentation"
+
 
 
 # FORCE cleanup of any existing build artifacts (not .git related)
@@ -51,7 +68,7 @@ build_version() {
     mike deploy "$version" --config-file "$temp_mkdocs_yml"
     
     # Clean up the temporary mkdocs.yml
-    rm "$temp_mkdocs_yml"
+    if [ "$version" != "10" ]; then rm "$temp_mkdocs_yml"; fi
     
     echo "✅ Rocky Linux $version deployed successfully"
 }
@@ -63,7 +80,8 @@ build_version "9" "versions/rocky-9" "" ""
 build_version "10" "versions/main" "latest" ""
 
 echo "Setting default version..."
-mike set-default latest
+mike set-default latest --config-file mkdocs.yml.10.tmp
+rm mkdocs.yml.10.tmp
 
 echo "✅ All versions deployed successfully"
 
