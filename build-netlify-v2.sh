@@ -77,10 +77,11 @@ build_version() {
 # These paths must match the paths used in 'git submodule add' in Part 1
 build_version "8" "versions/rocky-8" "" ""
 build_version "9" "versions/rocky-9" "" "" 
-build_version "10" "versions/main" "latest" ""
+build_version "10" "versions/main"
 
 echo "Setting default version..."
-mike set-default latest --config-file mkdocs.yml.10.tmp
+mike alias "10" latest
+mike set-default latest
 rm mkdocs.yml.10.tmp
 
 echo "✅ All versions deployed successfully"
