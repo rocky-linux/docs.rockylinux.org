@@ -16,6 +16,13 @@ which mike
 echo "Initializing and updating Git submodules..."
 git submodule update --init --recursive
 
+echo "--- Submodule Debugging Info ---"
+ls -la versions/rocky-8
+git status --porcelain
+git submodule status
+echo "--- End Submodule Debugging Info ---"
+
+
 # FORCE cleanup of any existing build artifacts (not .git related)
 echo "Force cleaning any existing build artifacts..."
 rm -rf site 2>/dev/null || true
@@ -34,7 +41,7 @@ build_version() {
     
     # Verify submodule's docs directory exists
     if [ ! -d "$submodule_path/docs" ]; then
-        echo "Submodule docs directory '$submodule_path/docs' not found. Ensure submodules are initialized and updated correctly."
+        echo "❌ Submodule docs directory '$submodule_path/docs' not found. Ensure submodules are initialized and updated correctly."
         return 1
     fi
 
@@ -50,7 +57,7 @@ build_version() {
     # Clean up the temporary mkdocs.yml
     rm "$temp_mkdocs_yml"
     
-    echo "Rocky Linux $version deployed successfully"
+    echo "✅ Rocky Linux $version deployed successfully"
 }
 
 # Build each version from its respective submodule path
@@ -62,7 +69,7 @@ build_version "10" "versions/main" "latest" ""
 echo "Setting default version..."
 mike set-default latest
 
-echo "All versions deployed successfully"
+echo "✅ All versions deployed successfully"
 
 # Verify mike state (optional, but good for debugging)
 echo "Verifying mike deployment..."
@@ -71,9 +78,9 @@ mike list
 echo "Extracting built site for Netlify..."
 
 # Extract from gh-pages for Netlify
-# Extract from mike's gh-pages branch
+# This part remains largely the same as it extracts from mike's gh-pages branch
 if git show-ref --verify --quiet refs/heads/gh-pages; then
-    echo " gh-pages branch found"
+    echo "✅ gh-pages branch found"
     
     BRANCH_FILE_COUNT=$(git ls-tree --name-only gh-pages | wc -l)
     echo "Files in gh-pages branch: $BRANCH_FILE_COUNT"
@@ -85,17 +92,17 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
         git archive gh-pages | tar -x -C site
         
         if [ -d "site" ] && [ "$(ls -A site 2>/dev/null | wc -l)" -gt 0 ]; then
-            echo " Site extracted successfully"
+            echo "✅ Site extracted successfully"
         else
-            echo " Site extraction failed"
+            echo "❌ Site extraction failed"
             exit 1
         fi
     else
-        echo "gh-pages branch is empty! This might indicate a problem with mike deployment."
+        echo "❌ gh-pages branch is empty! This might indicate a problem with mike deployment."
         exit 1
     fi
 else
-    echo "No gh-pages branch found! This might indicate a problem with mike deployment."
+    echo "❌ No gh-pages branch found! This might indicate a problem with mike deployment."
     exit 1
 fi
 
