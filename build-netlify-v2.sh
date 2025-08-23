@@ -25,8 +25,8 @@ clone_or_update_submodule() {
         echo "Submodule $path already exists. Updating..."
         (cd "$path" && git pull origin "$branch")
     else
-        echo "Cloning submodule $path..."
-        git clone --branch "$branch" "$url" "$path"
+        echo "Cloning submodule $path (shallow clone)..."
+        git clone --depth 1 --branch "$branch" "$url" "$path"
     fi
 }
 
