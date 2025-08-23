@@ -1,6 +1,6 @@
 [build]
   publish = "site"
-  command = "./build-netlify.sh"
+  command = "./build-netlify-v2.sh"
   # command = "pip install -r requirements.txt && git submodule update --init --recursive && mkdocs build"
 
 [build.environment]
