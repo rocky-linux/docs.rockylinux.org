@@ -1,0 +1,4 @@
+{
+  "buildCommand": "bash build-vercel.sh",
+  "outputDirectory": "site"
+}
