@@ -13,6 +13,9 @@ git submodule update --init --recursive
 echo "Installing dependencies... (already satisfied if run recently)"
 python3 -m pip install -r requirements.txt
 
+# Add pip installed executables to PATH
+export PATH="$(python3 -m site --user-base)/bin:$PATH"
+
 # Ensure submodules are initialized and updated
 echo "Initializing and updating Git submodules..."
 
@@ -66,7 +69,7 @@ build_version() {
     sed "s|^docs_dir: .*|docs_dir: $submodule_path/docs|" mkdocs.yml > "$temp_mkdocs_yml"
     
     # Deploy with mike, using the temporary mkdocs.yml
-    python3 -m mike deploy "$version" --config-file "$temp_mkdocs_yml"
+    mike deploy "$version" --config-file "$temp_mkdocs_yml"
     
     # Clean up the temporary mkdocs.yml
     if [ "$version" != "10" ]; then rm "$temp_mkdocs_yml"; fi
@@ -81,14 +84,14 @@ build_version "9" "versions/rocky-9" "" ""
 build_version "10" "versions/main"
 
 echo "Setting default version..."
-python3 -m mike alias "10" latest --config-file "mkdocs.yml.10.tmp"
-python3 -m mike set-default latest --config-file "mkdocs.yml.10.tmp"
+mike alias "10" latest --config-file "mkdocs.yml.10.tmp"
+mike set-default latest --config-file "mkdocs.yml.10.tmp"
 
 echo "✅ All versions deployed successfully"
 
 # Verify mike state (optional, but good for debugging)
 echo "Verifying mike deployment..."
-python3 -m mike list --config-file "mkdocs.yml.10.tmp"
+mike list --config-file "mkdocs.yml.10.tmp"
 rm mkdocs.yml.10.tmp
 
 echo "Extracting built site for Vercel..."
@@ -115,10 +118,6 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
         fi
     else
         echo "❌ gh-pages branch is empty! This might indicate a problem with mike deployment."
-        exit 1
-    fi
-else
-    echo "❌ No gh-pages branch found! This might indicate a problem with mike deployment."
     exit 1
 fi
 
