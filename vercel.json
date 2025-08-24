@@ -1,4 +1,8 @@
 {
-  "buildCommand": "bash build-vercel.sh",
-  "outputDirectory": "site"
+  "builds": [
+    {
+      "src": "build-vercel.sh",
+      "use": "@vercel/python"
+    }
+  ]
 }
