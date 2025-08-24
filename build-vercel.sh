@@ -11,7 +11,7 @@ git submodule update --init --recursive
 
 # Install dependencies
 echo "Installing dependencies... (already satisfied if run recently)"
-python -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 # Check which mike is being used
 which mike
