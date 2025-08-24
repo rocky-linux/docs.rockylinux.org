@@ -80,15 +80,15 @@ build_version "9" "versions/rocky-9" "" ""
 build_version "10" "versions/main"
 
 echo "Setting default version..."
-mike alias "10" latest
-mike set-default latest
-rm mkdocs.yml.10.tmp
+mike alias "10" latest --config-file "mkdocs.yml.10.tmp"
+mike set-default latest --config-file "mkdocs.yml.10.tmp"
 
 echo "✅ All versions deployed successfully"
 
 # Verify mike state (optional, but good for debugging)
 echo "Verifying mike deployment..."
-mike list
+mike list --config-file "mkdocs.yml.10.tmp"
+rm mkdocs.yml.10.tmp
 
 echo "Extracting built site for Netlify..."
 
