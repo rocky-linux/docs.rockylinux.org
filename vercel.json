@@ -1,8 +1,9 @@
 {
-  "build": {
-    "builder": "@vercel/python",
-    "src": "build-vercel.sh",
-    "config": { "maxLambdaSize": "250mb" }
-  },
+  "builds": [
+    {
+      "src": "build-vercel.sh",
+      "use": "@vercel/python"
+    }
+  ],
   "outputDirectory": "site"
 }
