@@ -3,11 +3,15 @@
 set -e
 set -x # Enable debugging output
 
-echo "=== NETLIFY BUILD: ROCKY LINUX DOCS WITH BRANCH-BASED VERSIONING (REFACTORED) ==="
+echo "=== VERCEL BUILD: ROCKY LINUX DOCS WITH BRANCH-BASED VERSIONING (REFACTORED) ==="
+
+# Initialize and update submodules
+echo "Initializing and updating Git submodules..."
+git submodule update --init --recursive
 
 # Install dependencies
 echo "Installing dependencies... (already satisfied if run recently)"
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 # Check which mike is being used
 which mike
@@ -90,9 +94,9 @@ echo "Verifying mike deployment..."
 mike list --config-file "mkdocs.yml.10.tmp"
 rm mkdocs.yml.10.tmp
 
-echo "Extracting built site for Netlify..."
+echo "Extracting built site for Vercel..."
 
-# Extract from gh-pages for Netlify
+# Extract from gh-pages for Vercel
 # This part remains largely the same as it extracts from mike's gh-pages branch
 if git show-ref --verify --quiet refs/heads/gh-pages; then
     echo "✅ gh-pages branch found"

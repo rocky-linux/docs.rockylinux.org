@@ -1,0 +1,12 @@
+[submodule "versions/rocky-8"]
+	path = versions/rocky-8
+	url = https://github.com/rocky-linux/documentation
+	branch = rocky-8
+[submodule "versions/main"]
+	path = versions/main
+	url = https://github.com/rocky-linux/documentation
+	branch = main
+[submodule "versions/rocky-9"]
+	path = versions/rocky-9
+	url = https://github.com/rocky-linux/documentation
+	branch = rocky-9
