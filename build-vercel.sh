@@ -69,7 +69,7 @@ build_version() {
     sed "s|^docs_dir: .*|docs_dir: $submodule_path/docs|" mkdocs.yml > "$temp_mkdocs_yml"
     
     # Deploy with mike, using the temporary mkdocs.yml
-    mike deploy "$version" --config-file "$temp_mkdocs_yml"
+    python3 -m mike deploy "$version" --config-file "$temp_mkdocs_yml"
     
     # Clean up the temporary mkdocs.yml
     if [ "$version" != "10" ]; then rm "$temp_mkdocs_yml"; fi
@@ -84,14 +84,14 @@ build_version "9" "versions/rocky-9" "" ""
 build_version "10" "versions/main"
 
 echo "Setting default version..."
-mike alias "10" latest --config-file "mkdocs.yml.10.tmp"
-mike set-default latest --config-file "mkdocs.yml.10.tmp"
+python3 -m mike alias "10" latest --config-file "mkdocs.yml.10.tmp"
+python3 -m mike set-default latest --config-file "mkdocs.yml.10.tmp"
 
 echo "✅ All versions deployed successfully"
 
 # Verify mike state (optional, but good for debugging)
 echo "Verifying mike deployment..."
-mike list --config-file "mkdocs.yml.10.tmp"
+python3 -m mike list --config-file "mkdocs.yml.10.tmp"
 rm mkdocs.yml.10.tmp
 
 echo "Extracting built site for Vercel..."
