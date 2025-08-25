@@ -3,62 +3,32 @@
 set -e
 set -x # Enable debugging output
 
-echo "=== VERCEL BUILD: ROCKY LINUX DOCS WITH BRANCH-BASED VERSIONING (REFACTORED) ==="
+echo "=== VERCEL BUILD: ROCKY LINUX DOCS ==="
 
-# FORCE cleanup of any existing build artifacts (not .git related)
-echo "Force cleaning any existing build artifacts..."
+# Force cleanup of any existing build artifacts
 rm -rf site 2>/dev/null || true
 
 # Initialize and update submodules
-echo "Initializing and updating Git submodules..."
 git submodule update --init --recursive
 
 # Install dependencies
-echo "Installing dependencies... (already satisfied if run recently)"
 python3 -m pip install -r requirements.txt
 
 # Find mike executable
 MIKE_BIN="$(python3 -m site --user-base)/bin/mike"
 
-# Ensure submodules are initialized and updated
-echo "Initializing and updating Git submodules..."
-
-# Function to clone or update a submodule
-clone_or_update_submodule() {
-    local branch=$1
-    local path=$2
-    local url=$3
-
-    if [ -d "$path" ]; then
-        echo "Submodule $path already exists. Updating..."
-        (cd "$path" && git pull origin "$branch")
-    else
-        echo "Cloning submodule $path (shallow clone)..."
-        git clone --depth 1 --branch "$branch" "$url" "$path"
-    fi
-}
-
-clone_or_update_submodule "rocky-8" "versions/rocky-8" "https://github.com/rocky-linux/documentation"
-clone_or_update_submodule "rocky-9" "versions/rocky-9" "https://github.com/rocky-linux/documentation"
-clone_or_update_submodule "main" "versions/main" "https://github.com/rocky-linux/documentation"
-
-
-
 echo "Building with mike versioning..."
 
 # Function to build a specific version from a specific submodule path
-# mike will read mkdocs.yml from the main repo, but use the specified docs_dir
 build_version() {
     local version=$1
-    local submodule_path=$2 # e.g., versions/rocky-8
-    # local alias=$3 # Removed for testing
-    # local title=$4 # Removed for testing
+    local submodule_path=$2
     
     echo "Building Rocky Linux $version from submodule path $submodule_path..."
     
     # Verify submodule's docs directory exists
     if [ ! -d "$submodule_path/docs" ]; then
-        echo "❌ Submodule docs directory '$submodule_path/docs' not found. Ensure submodules are initialized and updated correctly."
+        echo "❌ Submodule docs directory '$submodule_path/docs' not found."
         return 1
     fi
 
@@ -78,9 +48,8 @@ build_version() {
 }
 
 # Build each version from its respective submodule path
-# These paths must match the paths used in 'git submodule add' in Part 1
-build_version "8" "versions/rocky-8" "" ""
-build_version "9" "versions/rocky-9" "" "" 
+build_version "8" "versions/rocky-8"
+build_version "9" "versions/rocky-9"
 build_version "10" "versions/main"
 
 echo "Setting default version..."
@@ -89,7 +58,7 @@ echo "Setting default version..."
 
 echo "✅ All versions deployed successfully"
 
-# Verify mike state (optional, but good for debugging)
+# Verify mike state
 echo "Verifying mike deployment..."
 "$MIKE_BIN" list --config-file "mkdocs.yml.10.tmp"
 rm mkdocs.yml.10.tmp
@@ -97,7 +66,6 @@ rm mkdocs.yml.10.tmp
 echo "Extracting built site for Vercel..."
 
 # Extract from gh-pages for Vercel
-# This part remains largely the same as it extracts from mike's gh-pages branch
 if git show-ref --verify --quiet refs/heads/gh-pages; then
     echo "✅ gh-pages branch found"
     
