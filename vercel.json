@@ -1,4 +1,13 @@
 {
-  "buildCommand": "bash build-vercel.sh",
-  "outputDirectory": "site"
+  "buildCommand": "./vercel-build-v1.sh",
+  "outputDirectory": "site",
+  "installCommand": "pip install -r requirements.txt",
+  "framework": null,
+  "functions": {},
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
 }
