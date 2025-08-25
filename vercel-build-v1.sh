@@ -6,7 +6,53 @@ echo "=== VERCEL BUILD: ROCKY LINUX DOCS WITH BRANCH-BASED VERSIONING ==="
 
 # Install dependencies
 echo "Installing dependencies..."
-pip install -r requirements.txt
+pip3 install -r requirements.txt
+
+# Create mike wrapper using the correct approach
+cat > mike << 'EOF'
+#!/bin/bash
+# Mike wrapper script
+PYTHON_PATH=$(python3 -c "import site; print(':'.join(site.getsitepackages()))")
+export PYTHONPATH="$PYTHON_PATH:$PYTHONPATH"
+
+# Check for mike entry point
+python3 -c "
+import sys
+sys.argv = ['mike'] + sys.argv[1:]
+
+# Try different ways to run mike
+try:
+    # Method 1: Try using mike.app which is the main entry point
+    from mike.app import main
+    main()
+except (ImportError, AttributeError):
+    try:
+        # Method 2: Try using mike's command line interface
+        import mike.commands
+        import mike.git_utils
+        from mike import app
+        app.main()
+    except (ImportError, AttributeError):
+        try:
+            # Method 3: Last resort - use the direct import
+            import subprocess
+            import os
+            mike_path = os.path.join(os.path.dirname(sys.executable), 'mike')
+            if os.path.exists(mike_path):
+                os.execv(mike_path, sys.argv)
+            else:
+                print('ERROR: Could not find mike executable', file=sys.stderr)
+                sys.exit(1)
+        except Exception as e:
+            print(f'ERROR: Failed to run mike: {e}', file=sys.stderr)
+            sys.exit(1)
+" "$@"
+EOF
+chmod +x mike
+export PATH=".:$PATH"
+
+echo "Created mike wrapper, testing..."
+./mike --help 2>&1 | head -5 || echo "Mike wrapper test failed"
 
 # FORCE cleanup of any existing content
 echo "Force cleaning any existing directories..."
