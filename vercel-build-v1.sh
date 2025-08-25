@@ -30,10 +30,36 @@ except Exception as e:
 " "$@"
 EOF
 chmod +x mike
+
+# Create mkdocs wrapper using mkdocs main entry point
+cat > mkdocs << 'EOF'
+#!/bin/bash
+python3 -c "
+import sys
+# Import and run mkdocs main function
+try:
+    from mkdocs.__main__ import cli
+    cli()
+except ImportError:
+    try:
+        from mkdocs.commands import cli
+        cli.cli()
+    except ImportError:
+        try:
+            import runpy
+            runpy.run_module('mkdocs', run_name='__main__')
+        except Exception as e:
+            print(f'ERROR: Could not run mkdocs: {e}', file=sys.stderr)
+            sys.exit(1)
+" "$@"
+EOF
+chmod +x mkdocs
+
 export PATH=".:$PATH"
 
-echo "Created mike wrapper, testing..."
-./mike --help 2>&1 | head -3 || echo "Mike wrapper test failed"
+echo "Created mike and mkdocs wrappers, testing..."
+./mike --help 2>&1 | head -2 || echo "Mike wrapper test failed"
+./mkdocs --help 2>&1 | head -2 || echo "MkDocs wrapper test failed"
 
 # FORCE cleanup of any existing content
 echo "Force cleaning any existing directories..."
