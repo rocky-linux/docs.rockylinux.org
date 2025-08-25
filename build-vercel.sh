@@ -5,6 +5,10 @@ set -x # Enable debugging output
 
 echo "=== VERCEL BUILD: ROCKY LINUX DOCS WITH BRANCH-BASED VERSIONING (REFACTORED) ==="
 
+# FORCE cleanup of any existing build artifacts (not .git related)
+echo "Force cleaning any existing build artifacts..."
+rm -rf site 2>/dev/null || true
+
 # Initialize and update submodules
 echo "Initializing and updating Git submodules..."
 git submodule update --init --recursive
@@ -39,10 +43,6 @@ clone_or_update_submodule "rocky-9" "versions/rocky-9" "https://github.com/rocky
 clone_or_update_submodule "main" "versions/main" "https://github.com/rocky-linux/documentation"
 
 
-
-# FORCE cleanup of any existing build artifacts (not .git related)
-echo "Force cleaning any existing build artifacts..."
-rm -rf site 2>/dev/null || true
 
 echo "Building with mike versioning..."
 
