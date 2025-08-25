@@ -118,6 +118,10 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
         fi
     else
         echo "❌ gh-pages branch is empty! This might indicate a problem with mike deployment."
+        exit 1
+    fi
+else
+    echo "❌ No gh-pages branch found! This might indicate a problem with mike deployment."
     exit 1
 fi
 
