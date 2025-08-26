@@ -66,8 +66,19 @@ build_version() {
         # Local environment - mike command available
         MIKE_CMD="mike"
     else
-        # Vercel environment - use python3 -m mike
-        MIKE_CMD="python3 -m mike"
+        # Vercel environment - create a custom mike command
+        cat > mike_cmd.py << 'EOPCMD'
+#!/usr/bin/env python3
+import sys
+try:
+    from mike.driver import main
+    sys.exit(main())
+except Exception as e:
+    print(f'Error running mike: {e}', file=sys.stderr)
+    sys.exit(1)
+EOPCMD
+        chmod +x mike_cmd.py
+        MIKE_CMD="python3 mike_cmd.py"
     fi
     
     if [ -n "$alias" ] && [ -n "$title" ]; then
@@ -92,7 +103,7 @@ echo "Setting default version..."
 if command -v mike >/dev/null 2>&1; then
     mike set-default latest
 else
-    python3 -m mike set-default latest
+    python3 mike_cmd.py set-default latest
 fi
 
 echo "✅ All versions deployed successfully"
@@ -102,7 +113,7 @@ echo "Verifying mike deployment..."
 if command -v mike >/dev/null 2>&1; then
     mike list
 else
-    python3 -m mike list
+    python3 mike_cmd.py list
 fi
 
 echo "Extracting built site for Vercel..."
