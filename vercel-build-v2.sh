@@ -36,7 +36,7 @@ fi
 
 # Build with MkDocs
 echo "Building site with MkDocs..."
-mkdocs build
+python3 -m mkdocs build
 
 # Verify site was built
 if [ -d "site" ] && [ "$(ls -A site 2>/dev/null | wc -l)" -gt 0 ]; then
