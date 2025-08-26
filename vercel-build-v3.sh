@@ -66,7 +66,7 @@ build_version() {
         # Local environment - mike command available
         MIKE_CMD="mike"
     else
-        # Vercel environment - create a custom mike command
+        # Vercel environment - create custom mike and mkdocs commands
         cat > mike_cmd.py << 'EOPCMD'
 #!/usr/bin/env python3
 import sys
@@ -78,6 +78,30 @@ except Exception as e:
     sys.exit(1)
 EOPCMD
         chmod +x mike_cmd.py
+        
+        # Create mkdocs wrapper that mike can find
+        cat > mkdocs << 'EOMKDOCS'
+#!/usr/bin/env python3
+import sys
+try:
+    from mkdocs.__main__ import cli
+    cli()
+except ImportError:
+    try:
+        from mkdocs.commands import cli
+        cli.cli()
+    except ImportError:
+        try:
+            import runpy
+            runpy.run_module('mkdocs', run_name='__main__')
+        except Exception as e:
+            print(f'Error running mkdocs: {e}', file=sys.stderr)
+            sys.exit(1)
+EOMKDOCS
+        chmod +x mkdocs
+        
+        # Add current directory to PATH so mike can find mkdocs
+        export PATH=".:$PATH"
         MIKE_CMD="python3 mike_cmd.py"
     fi
     
@@ -103,6 +127,29 @@ echo "Setting default version..."
 if command -v mike >/dev/null 2>&1; then
     mike set-default latest
 else
+    # Ensure mkdocs wrapper is available
+    if [ ! -f "mkdocs" ]; then
+        cat > mkdocs << 'EOMKDOCS'
+#!/usr/bin/env python3
+import sys
+try:
+    from mkdocs.__main__ import cli
+    cli()
+except ImportError:
+    try:
+        from mkdocs.commands import cli
+        cli.cli()
+    except ImportError:
+        try:
+            import runpy
+            runpy.run_module('mkdocs', run_name='__main__')
+        except Exception as e:
+            print(f'Error running mkdocs: {e}', file=sys.stderr)
+            sys.exit(1)
+EOMKDOCS
+        chmod +x mkdocs
+    fi
+    export PATH=".:$PATH"
     python3 mike_cmd.py set-default latest
 fi
 
@@ -113,6 +160,29 @@ echo "Verifying mike deployment..."
 if command -v mike >/dev/null 2>&1; then
     mike list
 else
+    # Ensure mkdocs wrapper is available
+    if [ ! -f "mkdocs" ]; then
+        cat > mkdocs << 'EOMKDOCS'
+#!/usr/bin/env python3
+import sys
+try:
+    from mkdocs.__main__ import cli
+    cli()
+except ImportError:
+    try:
+        from mkdocs.commands import cli
+        cli.cli()
+    except ImportError:
+        try:
+            import runpy
+            runpy.run_module('mkdocs', run_name='__main__')
+        except Exception as e:
+            print(f'Error running mkdocs: {e}', file=sys.stderr)
+            sys.exit(1)
+EOMKDOCS
+        chmod +x mkdocs
+    fi
+    export PATH=".:$PATH"
     python3 mike_cmd.py list
 fi
 
