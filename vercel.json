@@ -1,5 +1,5 @@
 {
-  "buildCommand": "./vercel-build-v2.sh",
+  "buildCommand": "./vercel-build-v3.sh",
   "outputDirectory": "site",
   "installCommand": "pip3 install -r requirements.txt",
   "framework": null
