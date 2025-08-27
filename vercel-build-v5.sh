@@ -8,6 +8,21 @@ echo "=== VERCEL BUILD V5: CLEAN PYTHON MODULE APPROACH ==="
 echo "Installing dependencies..."
 pip3 install -r requirements.txt
 
+# Create mkdocs wrapper so mike can find it - MINIMAL APPROACH
+echo "Creating mkdocs command wrapper for mike..."
+cat > mkdocs << 'EOF'
+#!/usr/bin/env python3
+import sys
+from mkdocs.__main__ import cli
+cli()
+EOF
+chmod +x mkdocs
+
+# Add current directory to PATH so mike can find our mkdocs wrapper
+export PATH=".:$PATH"
+
+echo "✅ mkdocs wrapper created and added to PATH"
+
 # FORCE cleanup of any existing content
 echo "Force cleaning any existing directories..."
 rm -rf rockydocs3-* docs site 2>/dev/null || true
