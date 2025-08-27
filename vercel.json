@@ -1,5 +1,5 @@
 {
-  "buildCommand": "./debug-comprehensive.sh",
+  "buildCommand": "./debug-simple.sh",
   "outputDirectory": "site",
   "installCommand": "pip3 install -r requirements.txt",
   "framework": null
