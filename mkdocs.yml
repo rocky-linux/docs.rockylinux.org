@@ -83,6 +83,34 @@ plugins:
           default: false
           locale: uk
           name: Ukrainian
+        - build: true
+          default: false
+          locale: de
+          name: Deutsch
+        - build: true
+          default: false
+          locale: fr
+          name: Français
+        - build: true
+          default: false
+          locale: es
+          name: Español
+        - build: true
+          default: false
+          locale: it
+          name: Italian
+        - build: true
+          default: false
+          locale: ja
+          name: 日本語
+        - build: true
+          default: false
+          locale: ko
+          name: 한국어
+        - build: true
+          default: false
+          locale: zh
+          name: 简体中文
   - git-revision-date-localized:
       type: date
   - redirects:
