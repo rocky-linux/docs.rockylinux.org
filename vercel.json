@@ -1,6 +1,6 @@
 {
   "buildCommand": "./vercel-build-v20.sh",
-  "outputDirectory": "../site",
+  "outputDirectory": "site",
   "installCommand": "pip3 install -r requirements.txt",
   "framework": null
 }
