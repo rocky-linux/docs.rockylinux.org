@@ -15,3 +15,13 @@ docs/
 node_modules/
 
 archive/
+
+# Workspace directories (external to app repo)
+../content/
+../site/
+../temp/
+
+# Build artifacts
+rockydocs-*/
+mkdocs
+.vercel

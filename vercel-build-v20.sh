@@ -25,7 +25,8 @@ echo " mkdocs wrapper created and added to PATH"
 
 # FORCE cleanup of any existing content
 echo "Force cleaning any existing directories..."
-rm -rf rockydocs-* docs site 2>/dev/null || true
+rm -rf ../content/rockydocs-* docs ../site 2>/dev/null || true
+mkdir -p ../content ../site
 
 # Function to build a specific version from a specific branch
 build_version() {
@@ -37,7 +38,7 @@ build_version() {
     echo "Building Rocky Linux $version from branch $branch..."
     
     # Clone the specific branch WITH FULL HISTORY for git-revision-date-localized-plugin
-    local repo_dir="rockydocs-$version"
+    local repo_dir="../content/rockydocs-$version"
     echo "Cloning $branch with full git history..."
     git clone -b "$branch" https://github.com/rocky-linux/documentation.git "$repo_dir"
     
@@ -132,7 +133,8 @@ python3 -c "import sys; sys.argv=['mike','list']; from mike.driver import main; 
 echo "Extracting built site for Vercel..."
 
 # Clean any existing site directory
-rm -rf site
+rm -rf ../site
+mkdir -p ../site
 
 # Extract from gh-pages for Vercel
 if git show-ref --verify --quiet refs/heads/gh-pages; then
@@ -144,13 +146,13 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
     if [ "$BRANCH_FILE_COUNT" -gt 0 ]; then
         echo "Extracting site content from gh-pages..."
         
-        mkdir -p site
-        git archive gh-pages | tar -x -C site
+        mkdir -p ../site
+        git archive gh-pages | tar -x -C ../site
         
-        if [ -d "site" ] && [ "$(ls -A site 2>/dev/null | wc -l)" -gt 0 ]; then
+        if [ -d "../site" ] && [ "$(ls -A ../site 2>/dev/null | wc -l)" -gt 0 ]; then
             echo "✅ Site extracted successfully for Vercel deployment"
             echo "Site contents:"
-            ls -la site/ | head -10
+            ls -la ../site/ | head -10
         else
             echo "❌ Site extraction failed"
             exit 1
