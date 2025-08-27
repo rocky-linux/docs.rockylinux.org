@@ -2,7 +2,7 @@
 
 set -e
 
-echo "=== VERCEL BUILD V20: FIXING GIT REVISION DATE ISSUE ==="
+echo "=== VERCEL BUILD V20 ==="
 
 # Install dependencies
 echo "Installing dependencies..."
@@ -21,11 +21,11 @@ chmod +x mkdocs
 # Add current directory to PATH so mike can find our mkdocs wrapper
 export PATH=".:$PATH"
 
-echo "✅ mkdocs wrapper created and added to PATH"
+echo " mkdocs wrapper created and added to PATH"
 
 # FORCE cleanup of any existing content
 echo "Force cleaning any existing directories..."
-rm -rf rockydocs3-* docs site 2>/dev/null || true
+rm -rf rockydocs-* docs site 2>/dev/null || true
 
 # Function to build a specific version from a specific branch
 build_version() {
@@ -37,7 +37,7 @@ build_version() {
     echo "Building Rocky Linux $version from branch $branch..."
     
     # Clone the specific branch WITH FULL HISTORY for git-revision-date-localized-plugin
-    local repo_dir="rockydocs3-$version"
+    local repo_dir="rockydocs-$version"
     echo "Cloning $branch with full git history..."
     git clone -b "$branch" https://github.com/rocky-linux/documentation.git "$repo_dir"
     
@@ -47,7 +47,7 @@ build_version() {
         return 1
     fi
     
-    # CRITICAL: Instead of copying files, we need to work IN the cloned repo
+    # Instead of copying files, we need to work IN the cloned repo
     # to preserve git history for git-revision-date-localized-plugin
     echo "Working directly in cloned repo to preserve git history..."
     
@@ -164,6 +164,5 @@ else
     exit 1
 fi
 
-echo "🎉 V20 Vercel build completed successfully!"
+echo "🎉 Vercel build completed successfully!"
 echo "Static site with versioning ready with PRESERVED GIT HISTORY!"
-echo "🕒 git-revision-date-localized-plugin should now show correct timestamps!"
