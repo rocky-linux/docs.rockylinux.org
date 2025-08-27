@@ -23,5 +23,4 @@ archive/
 
 # Build artifacts
 rockydocs-*/
-mkdocs
 .vercel
