@@ -1,7 +1,7 @@
 ---
 site_name: "Documentation"
 site_url: "https://docs.rockylinux.org/"
-docs_dir: "docs/docs"
+docs_dir: "docs"
 repo_url: https://github.com/rocky-linux/documentation
 repo_name: rocky-linux/documentation
 edit_uri: "edit/main/docs/"
@@ -64,6 +64,8 @@ markdown_extensions:
   - meta
 
 plugins:
+  - mike:
+      version_selector: true
   - search
   - awesome-pages
   - i18n:
@@ -79,72 +81,8 @@ plugins:
           name: English
         - build: true
           default: false
-          locale: af
-          name: Afrikaans
-        - build: true
-          default: false
-          locale: de
-          name: Deutsch
-        - build: true
-          default: false
-          locale: fr
-          name: Français
-        - build: true
-          default: false
           locale: es
           name: Español
-        - build: true
-          default: false
-          locale: hi
-          name: हिन्दी
-        - build: true
-          default: false
-          locale: id
-          name: Bahasa Indonesia
-        - build: true
-          default: false
-          locale: it
-          name: Italian
-        - build: true
-          default: false
-          locale: ja
-          name: 日本語
-        - build: true
-          default: false
-          locale: ko
-          name: 한국어
-        - build: true
-          default: false
-          locale: zh
-          name: 简体中文
-        - build: true
-          default: false
-          locale: sv
-          name: Svenska
-        - build: true
-          default: false
-          locale: tr
-          name: Türkçe
-        - build: true
-          default: false
-          locale: pl
-          name: Polish
-        - build: true
-          default: false
-          locale: pt
-          name: Português
-        - build: true
-          default: false
-          locale: pt-BR
-          name: Brazilian
-        - build: true
-          default: false
-          locale: ru
-          name: Russian
-        - build: true
-          default: false
-          locale: uk
-          name: Ukrainian
   - git-revision-date-localized:
       type: date
   - redirects:
@@ -153,6 +91,10 @@ plugins:
   - tags
   - privacy
 extra:
+  version:
+    provider: mike
+    default: latest
+    alias: true
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/rocky_linux
@@ -163,4 +105,4 @@ extra:
     - icon: material/home
       link: https://rockylinux.org
 
-copyright: Copyright &copy; 2025 The Rocky Enterprise Software Foundation
+copyright: Copyright &copy; 2026 The Rocky Enterprise Software Foundation

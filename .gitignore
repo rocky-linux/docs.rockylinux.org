@@ -1,26 +1,31 @@
-# Public output
+# Build outputs
 site/
 public/
 build/
 
-# Docs sources
+# Cloned documentation sources (temporary)
 docs/
-
-# mkdocs cache
-.cache
-
-# dev envrc
-.envrc.local
-
-node_modules/
-
-archive/
-
-# Workspace directories (external to app repo)
-../content/
-../site/
-../temp/
-
-# Build artifacts
 rockydocs-*/
+
+# Python cache and environments
+__pycache__/
+*.pyc
+*.pyo
+.cache
+venv/
+.env
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Platform deployment
 .vercel
+.netlify
+
+# Temporary mkdocs wrapper script
+mkdocs
+
+# Development files
+.envrc.local
+archive/

@@ -1,6 +1,0 @@
-{
-  "buildCommand": "../rockydocs_deploy.sh --build-only",
-  "outputDirectory": "site",
-  "installCommand": "pip3 install -r requirements.txt",
-  "framework": null
-}
