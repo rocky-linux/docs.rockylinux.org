@@ -170,7 +170,8 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
                 fi
                 
                 # Copy latest content to root (excluding version-specific metadata)
-                rsync -av --exclude="versions.json" site/latest/ site/
+                # Use cp instead of rsync (not available in Vercel environment)
+                cp -r site/latest/* site/ 2>/dev/null || true
                 
                 # Restore the versions.json to maintain version selector functionality
                 if [ -f "site/versions.json.backup" ]; then
