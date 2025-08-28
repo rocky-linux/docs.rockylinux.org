@@ -71,6 +71,11 @@ build_version() {
     rm -rf docs
     ln -sf "$repo_dir/docs" docs
     
+    # Ensure mkdocs.yml is available for mike operations
+    if [ ! -f "mkdocs.yml" ]; then
+        ln -sf "configs/mkdocs.yml" mkdocs.yml
+    fi
+    
     echo "Created symlink to docs with preserved git history"
     
     # Initialize git repo in parent if not exists (for mike operations)
