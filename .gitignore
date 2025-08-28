@@ -23,8 +23,6 @@ package-lock.json
 .vercel
 .netlify
 
-# Temporary mkdocs wrapper script
-mkdocs
 
 # Development files
 .envrc.local

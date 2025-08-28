@@ -117,7 +117,8 @@ git config user.email "webmaster@rockylinux.org"
 
 # Create initial commit
 echo "# Rocky Linux Docs Build" > README.md
-git add README.md mkdocs
+git add README.md
+git add -f mkdocs  # Force add mkdocs wrapper even if in gitignore elsewhere
 git commit -m "Initial commit for Vercel build $(date)"
 
 # Build each version from its respective branch
