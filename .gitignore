@@ -1,17 +1,29 @@
-# Public output
+# Build outputs
 site/
 public/
 build/
 
-# Docs sources
+# Cloned documentation sources (temporary)
 docs/
+rockydocs-*/
 
-# mkdocs cache
+# Python cache and environments
+__pycache__/
+*.pyc
+*.pyo
 .cache
+venv/
+.env
 
-# dev envrc
-.envrc.local
-
+# Node.js
 node_modules/
+package-lock.json
 
+# Platform deployment
+.vercel
+.netlify
+
+
+# Development files
+.envrc.local
 archive/
