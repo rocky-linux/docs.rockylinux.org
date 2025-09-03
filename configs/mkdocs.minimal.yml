@@ -81,8 +81,8 @@ plugins:
           name: English
         - build: true
           default: false
-          locale: es
-          name: Español
+          locale: uk
+          name: Ukrainian
   - git-revision-date-localized:
       type: date
   - redirects:
