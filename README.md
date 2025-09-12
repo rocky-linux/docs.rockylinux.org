@@ -7,6 +7,17 @@ This repository is responsible for building and deploying the official Rocky Lin
 > [!IMPORTANT]
 > This repository contains the *build and deployment logic only*. It does not contain the documentation content itself.
 
+## Table of Contents
+- [Content Source](#content-source)
+- [How the Build Process Works](#how-the-build-process-works)
+- [Key Files & Scripts](#key-files--scripts)
+- [Deep Dive: The `vercel-build.sh` Script](#deep-dive-the-vercel-buildsh-script)
+- [How to Maintain the Site](#how-to-maintain-the-site)
+- [Managing Deployments on Vercel](#managing-deployments-on-vercel)
+  - [Vercel CLI](#vercel-cli)
+  - [Vercel Web UI](#vercel-web-ui)
+- [Local Development & Testing](#local-development--testing)
+
 ## Content Source
 
 All documentation content is sourced from the [rocky-linux/documentation](https://github.com/rocky-linux/documentation) GitHub repository. The build script in this repository clones the content repo during the Vercel deployment process.
