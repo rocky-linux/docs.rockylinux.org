@@ -1,7 +1,5 @@
 # docs.rockylinux.org
 
-![Deployment:Production](https://github.com/rocky-linux/docs.rockylinux.org/actions/workflows/staging.yml/badge.svg)
-
 ## Overview
 
 This repository is responsible for building and deploying the official Rocky Linux documentation site, hosted at [docs.rockylinux.org](https://docs.rockylinux.org). The site is built and deployed automatically via the [Vercel](https://vercel.com/) platform.
