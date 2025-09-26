@@ -8,7 +8,7 @@ This repository is responsible for building and deploying the official Rocky Lin
 > This repository contains the *build and deployment logic only*. It does not contain the documentation content itself.
 
 ## Table of Contents
-- [Content Source ](#content-source)
+- [Content Source](#content-source)
 - [How the Build Process Works](#how-the-build-process-works)
 - [Key Files & Scripts](#key-files--scripts)
 - [Deep Dive: The `vercel-build.sh` Script](#deep-dive-the-vercel-buildsh-script)
