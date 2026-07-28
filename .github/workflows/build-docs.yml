@@ -39,6 +39,25 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ vars.AWS_REGION }}
 
+      # Search indexes are up to 30MB, which exceeds Fastly's cacheable object
+      # size limit (~20MB) and S3 does not compress. Store them gzipped with
+      # Content-Encoding so they cache at the edge and download ~6x faster.
+      - name: Compress search indexes
+        run: |
+          find site -name search_index.json -type f | while read -r f; do
+            key="${f#site/}"
+            gzip -9 -c "$f" > /tmp/search_index.json.gz
+            aws s3 cp /tmp/search_index.json.gz "s3://${{ secrets.S3_BUCKET }}/$key" \
+              --content-encoding gzip \
+              --content-type application/json \
+              --cache-control "public, max-age=604800" \
+              --only-show-errors
+          done
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+
       - name: Soft purge Fastly cache
         continue-on-error: true
         run: |
