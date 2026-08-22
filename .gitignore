@@ -19,11 +19,6 @@ venv/
 node_modules/
 package-lock.json
 
-# Platform deployment
-.vercel
-.netlify
-
-
 # Development files
 .envrc.local
 archive/

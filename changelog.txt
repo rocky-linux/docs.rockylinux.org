@@ -1,6 +1,46 @@
 CHANGELOG - Rocky Linux Documentation Build System
 ===================================================
 
+2026-08-21
+----------
+Decommissioned Vercel. The site is now built by GitHub Actions, published to
+S3, and served through Fastly.
+
+Changes:
+- Removed vercel.json (Vercel build configuration)
+- Renamed scripts/vercel-build.sh to scripts/build.sh and stripped Vercel
+  references from its output and comments; build logic is unchanged
+- Removed the unused legacy scripts/vercel-build-v20.sh and
+  scripts/vercel-build-v21.sh
+- .github/workflows/build-docs.yml: updated the build step to ./scripts/build.sh
+- Removed the disabled Fastly Compute@Edge workflows (preview, staging,
+  build-container) and the .github/actions/build-docs composite action. These
+  referenced compute-js/, build-all.sh and setup-deps.sh, none of which exist
+  on this branch, so they were non-functional. They remain available on the
+  origin/fastly and origin/fastly-aug30 branches.
+- .envrc: dropped the stale compute-js/bin PATH entry
+- .gitignore: dropped the .vercel and .netlify entries
+- README.md: rewrote the deployment documentation for the S3 + Fastly pipeline
+
+Note: the current architecture is an S3 origin behind a Fastly delivery
+service, not Fastly Compute@Edge.
+
+Also fixed (unrelated to the Vercel removal, found while testing):
+- .github/workflows/build-docs.yml: the "Compress search indexes" step now
+  uses "find -L" instead of "find". mike publishes version aliases as
+  symlinks (site/latest -> site/10), and while the S3 sync follows them and
+  uploads real objects, the compression step did not descend into them. The
+  result was that /latest/search/search_index.json was served uncompressed at
+  ~30MB and Fastly rejected it with "503 Response object too large"
+  (error 54113), breaking search for every user on /latest/. Versioned paths
+  (/8/, /9/, /10/) and the site root were unaffected.
+
+Not changed: configs/mkdocs.yml still sets privacy.assets_fetch: false, which
+was originally a workaround for SSL issues in Vercel's build environment (see
+the 2026-01-26 entry). Re-enabling asset fetching should be evaluated
+separately with a test build.
+
+
 2026-01-26
 ----------
 Fixed Vercel build failures caused by Vercel's migration to uv package manager.

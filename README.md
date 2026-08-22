@@ -2,48 +2,63 @@
 
 ## Overview
 
-This repository is responsible for building and deploying the official Rocky Linux documentation site, hosted at [docs.rockylinux.org](https://docs.rockylinux.org). The site is built and deployed automatically via the [Vercel](https://vercel.com/) platform.
+This repository is responsible for building and deploying the official Rocky Linux documentation site, hosted at [docs.rockylinux.org](https://docs.rockylinux.org). The site is built by GitHub Actions, published as static files to an S3 bucket, and served to the public through [Fastly](https://www.fastly.com/).
 
 > [!IMPORTANT]
 > This repository contains the *build and deployment logic only*. It does not contain the documentation content itself.
 
 ## Table of Contents
-- [Content Source ](#content-source)
-- [How the Build Process Works ](#how-the-build-process-works)
+- [Content Source](#content-source)
+- [How the Build Process Works](#how-the-build-process-works)
 - [Key Files & Scripts](#key-files--scripts)
-- [Deep Dive : The `vercel-build.sh` Script](#deep-dive-the-vercel-buildsh-script)
+- [Deep Dive: The `build.sh` Script](#deep-dive-the-buildsh-script)
 - [How to Maintain the Site](#how-to-maintain-the-site)
-- [Managing Deployments on Vercel](#managing-deployments-on-vercel)
-  - [Vercel CLI](#vercel-cli)
-  - [Vercel Web UI](#vercel-web-ui)
+- [Deployment & Operations](#deployment--operations)
+  - [Triggering a Deployment](#triggering-a-deployment)
+  - [Purging the Fastly Cache](#purging-the-fastly-cache)
+  - [Required Secrets & Variables](#required-secrets--variables)
+  - [Troubleshooting](#troubleshooting)
 - [Local Development & Testing](#local-development--testing)
 
 ## Content Source
 
-All documentation content is sourced from the [rocky-linux/documentation](https://github.com/rocky-linux/documentation) GitHub repository. The build script in this repository clones the content repo during the Vercel deployment process.
+All documentation content is sourced from the [rocky-linux/documentation](https://github.com/rocky-linux/documentation) GitHub repository. The build script in this repository clones the content repo at build time.
 
 ## How the Build Process Works
 
-The deployment process is orchestrated by Vercel, which executes a custom build script .
+The pipeline is defined in `.github/workflows/build-docs.yml`.
 
-1.  **Trigger:** A push to this repository's `main` branch triggers a new build on Vercel.
-2.  **Build:** Vercel runs the `./scripts/vercel-build.sh` script, which uses [mkdocs](https://www.mkdocs.org/) and the [mike](https://github.com/jimporter/mike) plugin to build a versioned static HTML site.
-3.  **Deploy:** The script places the final generated site into the `site/` directory, which Vercel then deploys to production.
-4.  **URL Structure:** The site uses a "Root + Versioned" deployment strategy. The latest documentation (currently Rocky Linux 10) is served from the root URL (`/`), while all documentation versions remain accessible via versioned paths (e.g., `/8/`, `/9/`, `/latest/`).
+1.  **Trigger:** A build starts on any of the following:
+    - A push to this repository's `main` branch.
+    - A daily schedule (`0 4 * * *` UTC), to pick up content changes in `rocky-linux/documentation`.
+    - A manual `workflow_dispatch` run.
+    - A `repository_dispatch` event of type `deploy-docs`, sent by the content repository when its docs change.
+
+    Runs are serialized through the `s3-deploy` concurrency group, so deployments never overlap.
+
+2.  **Build:** The workflow runs `./scripts/build.sh`, which uses [mkdocs](https://www.mkdocs.org/) and the [mike](https://github.com/jimporter/mike) plugin to build a versioned static HTML site into the `site/` directory.
+
+3.  **Publish:** `aws s3 sync site/ s3://$S3_BUCKET/ --delete` uploads the result, with a `public, max-age=604800` cache header. The `--delete` flag means the bucket is an exact mirror of the build output.
+
+4.  **Compress search indexes:** Each `search_index.json` is re-uploaded gzipped with `Content-Encoding: gzip`. These files can reach ~30MB uncompressed, which exceeds Fastly's cacheable object size limit, and S3 does not compress on the fly. Compressing them keeps the indexes cacheable at the edge and makes them roughly 6x faster to download.
+
+5.  **Purge:** The workflow issues a Fastly soft purge for surrogate key `all`, so the edge picks up the new content. This step is `continue-on-error`, since a failed purge does not invalidate an otherwise successful deploy — the cache will expire on its own.
+
+6.  **URL Structure:** The site uses a "Root + Versioned" deployment strategy. The latest documentation (currently Rocky Linux 10) is served from the root URL (`/`), while all documentation versions remain accessible via versioned paths (e.g., `/8/`, `/9/`, `/latest/`).
 
 ## Key Files & Scripts
 
--   `vercel.json`: Configures Vercel to use the custom build command and specifies the output directory (`site`).
--   `scripts/vercel-build.sh`: The primary script that orchestrates the entire build. It contains all the logic for cloning, versioning, and building the documentation.
+-   `.github/workflows/build-docs.yml`: The build and deploy pipeline (build → S3 → Fastly purge).
+-   `scripts/build.sh`: The primary script that orchestrates the entire build. It contains all the logic for cloning, versioning, and building the documentation.
 -   `requirements.txt`: A standard Python file listing the dependencies required for the build, such as `mkdocs` and `mike`.
--   `mkdocs.yml`: The main configuration file for `mkdocs`. The build script manages which configuration is used for the build.
+-   `configs/mkdocs.yml`: The main configuration file for `mkdocs`. The build script symlinks this to `mkdocs.yml` so `mike` can find it.
 
-## Deep Dive: The `vercel-build.sh` Script
+## Deep Dive: The `build.sh` Script
 
-This script is the heart of the repository and is designed to run within the Vercel environment. For maintainers, understanding its structure is key.
+This script is the heart of the repository. For maintainers, understanding its structure is key.
 
 #### Stage 1: Initialization
-The script begins by installing Python dependencies from `requirements.txt`. It also creates a small `mkdocs` executable wrapper script. This ensures that `mike` can find and use the correct `mkdocs` instance within the Vercel build environment's `PATH`.
+The script creates a Python 3.12 virtual environment with [`uv`](https://github.com/astral-sh/uv), installs the dependencies from `requirements.txt`, and puts `.venv/bin` on the `PATH` so `mkdocs` and `mike` resolve directly. It then applies a small in-place patch to `mkdocs-awesome-pages-plugin` for i18n stability.
 
 #### Stage 2: The `build_version` Function
 This function is called for each documentation version that needs to be built. It:
@@ -55,17 +70,20 @@ This function is called for each documentation version that needs to be built. I
 After cloning a version, the script uses `mike deploy` to build the static HTML for that version. `mike` manages the versioning by committing the built site to a temporary `gh-pages` branch within the build environment. This process is repeated for all specified versions.
 
 #### Stage 4: Site Extraction
-Once `mike` has built all versions into the `gh-pages` branch, the script extracts the complete static site into the `site/` directory using `git archive`. This directory is the final artifact that Vercel will deploy.
+Once `mike` has built all versions into the `gh-pages` branch, the script extracts the complete static site into the `site/` directory using `git archive`. This directory is the final artifact that gets synced to S3.
 
 #### Stage 5: Root Deployment
 To ensure `docs.rockylinux.org` serves the latest documentation directly, the script performs a final step: it copies all content from the `site/latest/` directory to the root of the `site/` directory. It carefully preserves the `versions.json` file to ensure the version-switching dropdown menu continues to function correctly across the entire site.
+
+> [!WARNING]
+> To give `mike` a repository to work in, the script deletes and re-initializes `.git` in the working directory. This is safe on a throwaway CI runner, but it will destroy your local git state if you run the script directly in a checkout you care about. See [Local Development & Testing](#local-development--testing).
 
 ## How to Maintain the Site
 
 Maintenance typically involves modifying the build script to add, update, or remove documentation versions.
 
 #### Adding a New Documentation Version
-1.  Open `scripts/vercel-build.sh`.
+1.  Open `scripts/build.sh`.
 2.  Find the section where `build_version` is called.
 3.  Add a new line for the new version, specifying the version number and the corresponding branch name from the content repository. For example, to add Rocky Linux 11 from the `rocky-11` branch:
     ```bash
@@ -74,7 +92,7 @@ Maintenance typically involves modifying the build script to add, update, or rem
 
 #### Changing the Default Version
 The default version is the one aliased to `latest`.
-1.  Open `scripts/vercel-build.sh`.
+1.  Open `scripts/build.sh`.
 2.  Modify the `build_version` call that includes `"latest"` as the alias. For example, to make version 11 the new latest:
     ```bash
     # Old
@@ -86,119 +104,93 @@ The default version is the one aliased to `latest`.
 3.  The `mike set-default` command uses `latest`, so it does not need to be changed.
 
 #### Removing an Old Version
-1.  Open `scripts/vercel-build.sh`.
+1.  Open `scripts/build.sh`.
 2.  Find the `build_version` call for the version you want to remove and delete or comment out the line.
 
-## Managing Deployments on Vercel
-
-Deployments are handled automatically by Vercel when commits are pushed to the `main` branch. However, maintainers can also manage deployments manually via the Vercel CLI or the web dashboard.
-
-### Vercel CLI
-
-For more direct control, the Vercel CLI is a powerful tool. It allows you to deploy, manage, and inspect your project from the command line.
-
-#### 1. Installation
-First, install the Vercel CLI globally using `npm` (Node.js is required):
-```shell
-npm i -g vercel
-```
-
-#### 2. Login
-Log in to your Vercel account. This will likely open a browser window for authentication.
-```shell
-vercel login
-```
-
-#### 3. Linking the Project
-Before you can manage a project, you must link your local directory to the remote Vercel project. This is a crucial one-time step.
-
-```shell
-# Clone the repository if you haven't already
-git clone https://github.com/rocky-linux/docs.rockylinux.org.git
-cd docs.rockylinux.org
-
-# Link the project
-vercel link
-```
-The CLI will interactively guide you to select the correct Vercel scope (team) and project.
-
-For non-interactive environments or to be explicit, you can use flags:
-```shell
-# Example of linking to a specific project within a specific scope (team)
-vercel link --scope=rocky-linux-scope --project=docs-rockylinux-org
-```
 > [!NOTE]
-> Replace `rocky-linux-scope` and `docs-rockylinux-org` with the actual scope and project names on Vercel.
+> Because the S3 sync uses `--delete`, removing a version from the build script also removes it from the live site on the next deploy.
 
-#### 4. Triggering Manual Deployments
-You can trigger new builds and deployments directly from your local machine. This is useful for testing changes in a preview environment before merging to `main`.
+## Deployment & Operations
 
--   **Preview Deployment:** Create a unique preview deployment with its own URL. Vercel builds the project and provides a link to the result.
-    ```shell
-    vercel
-    ```
--   **Production Deployment:** Push a new build to the official production domain (`docs.rockylinux.org`).
-    ```shell
-    vercel --prod
-    ```
-    > [!WARNING]
-> This command updates the live site. It should only be used when you are certain the build is stable.
+Deployments are fully automated. Pushing to `main` — or a content change in `rocky-linux/documentation` — is all that is normally required.
 
-#### 5. Inspecting Deployments & Logs
--   **List Projects:** To see all projects you have access to:
-    ```shell
-    vercel project ls
-    ```
--   **List Deployments:** To see a list of recent deployments for the linked project:
-    ```shell
-    vercel ls
-    ```
--   **View Logs:** To view the build or runtime logs for a specific deployment in real-time, use the deployment URL provided by the `vercel` or `vercel ls` commands:
-    ```shell
-    vercel logs <deployment-url>
-    ```
+### Triggering a Deployment
 
-#### 6. CLI Troubleshooting
--   **Authentication Issues:** If you get permission errors, run `vercel login` again to re-authenticate.
--   **Wrong Project/Scope:** If commands are failing or not showing the right information, you may be linked to the wrong project. Run `vercel link` again to re-link your local directory. You can check the current link status by inspecting the `.vercel` directory.
--   **Build Failures:** If a manual deployment with `vercel` fails, the command will output a URL to the build logs for you to inspect.
+To start a build manually without pushing a commit:
 
-### Vercel Web UI
+```shell
+# Requires the GitHub CLI, authenticated with access to the repo
+gh workflow run build-docs.yml -R rocky-linux/docs.rockylinux.org
+```
 
-The [Vercel Dashboard](https://vercel.com/) provides a user-friendly web interface for project management. After logging in and selecting the project, you can perform several key actions:
+To watch the run and inspect logs:
 
--   **Viewing Deployments:**
-    1.  Navigate to the project's dashboard.
-    2.  Click the **Deployments** tab.
-    3.  Here you will see a complete history of all deployments (both production and preview), along with their status, branch, and commit message.
+```shell
+gh run list   -R rocky-linux/docs.rockylinux.org --workflow=build-docs.yml --limit 5
+gh run watch  -R rocky-linux/docs.rockylinux.org <run-id>
+gh run view   -R rocky-linux/docs.rockylinux.org <run-id> --log-failed
+```
 
--   **Inspecting Logs:**
-    1.  From the **Deployments** list, click on a specific deployment.
-    2.  Select the **Build Logs** or **Functions** tab to view detailed logs. This is essential for diagnosing a failed build.
+The same workflow can also be triggered from the content repository via a `repository_dispatch` event of type `deploy-docs`.
 
--   **Promoting to Production:**
-    You can manually promote a successful preview deployment to production without needing a new build.
-    1.  Find the desired preview deployment in the **Deployments** list.
-    2.  Click the overflow menu (three dots) on the right.
-    3.  Select **Promote to Production**.
+### Purging the Fastly Cache
 
--   **Managing Domains and Settings:**
-    -   **Domains:** Use the **Settings -> Domains** tab to manage custom domains and subdomains.
-    -   **Environment Variables:** Use the **Settings -> Environment Variables** tab to add, edit, or remove any necessary variables for the build environment.
+The workflow soft-purges the whole service after every successful deploy. To purge by hand — for example if the purge step failed, or if you changed something at the Fastly layer:
+
+```shell
+curl -X POST \
+  "https://api.fastly.com/service/$FASTLY_SERVICE_ID/purge" \
+  -H "Fastly-Key: $FASTLY_API_TOKEN" \
+  -H "Fastly-Soft-Purge: 1" \
+  -H "Surrogate-Key: all" \
+  -H "Accept: application/json"
+```
+
+`FASTLY_SERVICE_ID` is exported by `.envrc` (via [direnv](https://direnv.net/)). Put your personal `FASTLY_API_TOKEN` in `.envrc.local`, which is git-ignored.
+
+A soft purge marks content stale rather than evicting it, so the edge keeps serving the old copy until the new one is fetched. There is no hard-down window.
+
+### Required Secrets & Variables
+
+Configured in the repository's **Settings → Secrets and variables → Actions**.
+
+| Name | Type | Purpose |
+| --- | --- | --- |
+| `S3_BUCKET` | secret | Destination bucket name for the built site |
+| `AWS_ACCESS_KEY_ID` | secret | Credentials for the S3 sync |
+| `AWS_SECRET_ACCESS_KEY` | secret | Credentials for the S3 sync |
+| `FASTLY_SERVICE_ID` | secret | Fastly delivery service fronting the bucket |
+| `FASTLY_API_TOKEN` | secret | Token with purge rights on that service |
+| `AWS_REGION` | variable | Region of the S3 bucket |
+
+### Troubleshooting
+
+-   **Build failed:** Use `gh run view <run-id> --log-failed`. The most common causes are an upstream change in `rocky-linux/documentation` that breaks a mkdocs plugin, or the `mkdocs-awesome-pages-plugin` patch in Stage 1 failing to apply after a dependency bump.
+-   **Deploy succeeded but the site looks stale:** The purge step is `continue-on-error`, so check whether it actually succeeded, and re-run the manual purge above if not.
+-   **A page 404s that used to work:** Remember the sync runs with `--delete`. If a page vanished from the build output, it is now gone from the bucket too.
+-   **Search returns nothing:** Check that `search_index.json` is being served with `Content-Encoding: gzip` and a 200 status, e.g. `curl -sI https://docs.rockylinux.org/search/search_index.json`.
 
 ## Local Development & Testing
 
-You can simulate the Vercel build process locally to test changes.
-1.  Ensure you have Python 3 and `pip` installed.
-2.  Install the required dependencies:
+You can run the full build locally to test changes.
+
+> [!CAUTION]
+> `scripts/build.sh` is destructive to its working directory: it runs `rm -rf .git` and re-initializes a fresh repository, and it overwrites `README.md` with a placeholder. **Do not run it directly inside your working checkout.** Copy the repository to a scratch directory first:
+
+```shell
+cp -r docs.rockylinux.org /tmp/docs-build && cd /tmp/docs-build
+```
+
+1.  Install [`uv`](https://github.com/astral-sh/uv). The script creates its own Python 3.12 virtual environment and installs `requirements.txt` into it, so no other setup is needed.
+2.  Run the build script:
     ```shell
-    pip3 install -r requirements.txt
+    ./scripts/build.sh
     ```
-3.  Run the build script:
-    ```shell
-    ./scripts/vercel-build.sh
-    ```
-4.  The script will execute the full build process and place the output in the `site/` directory. You can inspect the contents or serve them locally with a simple web server to verify your changes.
+3.  The script will execute the full build process and place the output in the `site/` directory. Serve it locally to verify your changes:
     ```shell
     python3 -m http.server --directory site
     ```
+
+A full build clones three branches of the content repository with complete history. Expect it to take roughly 10 minutes and produce about 3.7GB in `site/`, plus the `rockydocs-8`, `rockydocs-9` and `rockydocs-10` clones and a `.venv`.
+
+The many `WARNING - External file: ...` messages during the build are expected. They come from the `privacy` plugin running with `assets_fetch: false` and do not indicate a problem.

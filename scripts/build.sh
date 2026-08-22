@@ -2,7 +2,7 @@
 
 set -e
 
-echo "=== VERCEL BUILD - PRODUCTION ==="
+echo "=== DOCS BUILD - PRODUCTION ==="
 
 # Install dependencies into a virtual environment
 echo "Creating virtual environment and installing dependencies..."
@@ -19,7 +19,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     sed -i '' 's/if item.children:/if hasattr(item, "children") and item.children:/g' "$S_PKG/navigation.py"
     sed -i '' 's/class MetaNavRestItem(MetaNavItem):/class MetaNavRestItem(MetaNavItem):\n    children = []\n    is_section = False\n    is_page = False\n    is_link = False/g' "$S_PKG/meta.py"
 else
-    # Linux (Vercel) syntax
+    # Linux syntax
     sed -i 's/if item.children:/if hasattr(item, "children") and item.children:/g' "$S_PKG/navigation.py"
     sed -i 's/class MetaNavRestItem(MetaNavItem):/class MetaNavRestItem(MetaNavItem):\n    children = []\n    is_section = False\n    is_page = False\n    is_link = False/g' "$S_PKG/meta.py"
 fi
@@ -130,7 +130,7 @@ git config user.email "webmaster@rockylinux.org"
 # Create initial commit
 echo "# Rocky Linux Docs Build" > README.md
 git add README.md
-git commit -m "Initial commit for Vercel build $(date)"
+git commit -m "Initial commit for docs build $(date)"
 
 # Build each version from its respective branch
 build_version "8" "rocky-8" "" ""
@@ -146,12 +146,12 @@ echo "All versions deployed successfully"
 echo "Verifying mike deployment..."
 mike list
 
-echo "Extracting built site for Vercel with ROOT + VERSIONED deployment..."
+echo "Extracting built site with ROOT + VERSIONED deployment..."
 
 # Clean any existing site directory
 rm -rf site
 
-# Extract from gh-pages for Vercel
+# Extract from gh-pages
 if git show-ref --verify --quiet refs/heads/gh-pages; then
     echo "gh-pages branch found"
     
@@ -165,13 +165,13 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
         git archive gh-pages | tar -x -C site
         
         if [ -d "site" ] && [ "$(ls -A site 2>/dev/null | wc -l)" -gt 0 ]; then
-            echo "Site extracted successfully for Vercel deployment"
+            echo "Site extracted successfully for deployment"
             echo "Site contents:"
             ls -la site/ | head -10
             
-            # NEW V21 FEATURE: Deploy latest version to root for backward compatibility
+            # Deploy latest version to root for backward compatibility
             echo ""
-            echo "V21 FEATURE: Deploying latest version to ROOT for backward compatibility..."
+            echo "Deploying latest version to ROOT for backward compatibility..."
             
             # Check if latest version directory exists in the extracted site
             if [ -d "site/latest" ]; then
@@ -187,7 +187,7 @@ if git show-ref --verify --quiet refs/heads/gh-pages; then
                 fi
                 
                 # Copy latest content to root (excluding version-specific metadata)
-                # Use cp instead of rsync (not available in Vercel environment)
+                # Use cp instead of rsync (not guaranteed present in CI images)
                 cp -r site/latest/* site/ 2>/dev/null || true
                 
                 # Restore the versions.json to maintain version selector functionality
@@ -242,7 +242,7 @@ else
 fi
 
 echo ""
-echo "Vercel build completed successfully!"
+echo "Docs build completed successfully!"
 echo "Features:"
 echo "   • Backward compatibility: Latest content served from root"
 echo "   • Version selector: Still works from any page"

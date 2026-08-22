@@ -1,6 +1,0 @@
-{
-  "buildCommand": "./scripts/vercel-build.sh",
-  "outputDirectory": "site",
-  "installCommand": "echo 'Dependencies installed in build script'",
-  "framework": null
-}
